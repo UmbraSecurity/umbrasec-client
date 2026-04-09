@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Account — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="/static/shared.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="auth-wrapper">
+        <div class="container-narrow">
+            <a href="https://umbrasec.one" class="brand" style="justify-content:center; margin-bottom:2rem; text-decoration:none;">Umbra<span>Security</span></a>
+            <div class="glass-card">
+                <h1>Anonymous Account</h1>
+                <p class="subtitle">No email required. Pay with crypto for maximum privacy.</p>
+                <div class="msg msg-error" id="error"></div>
+                <form id="registerForm" method="POST" action="/register/anonymous">
+                    <input type="hidden" name="_csrf" id="csrf">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_-]+" autocomplete="username" placeholder="letters, numbers, - and _">
+                    <p class="hint">3-32 characters, alphanumeric</p>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required minlength="12" autocomplete="new-password">
+                    <p class="hint">Minimum 12 characters</p>
+                    <label for="confirm">Confirm Password</label>
+                    <input type="password" id="confirm" name="confirm" required minlength="12" autocomplete="new-password">
+                    <button type="submit" class="btn btn-primary">Create Anonymous Account</button>
+                </form>
+                <div class="form-link">
+                    <a href="/register">Register with email instead</a>
+                </div>
+                <div class="form-link">
+                    <a href="/login">Already have an account? Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('/api/csrf', { credentials: 'same-origin' })
+            .then(r => r.json())
+            .then(data => { document.getElementById('csrf').value = data.csrfToken; })
+            .catch(() => {});
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const errEl = document.getElementById('error');
+            errEl.style.display = 'none';
+            if (document.getElementById('password').value !== document.getElementById('confirm').value) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('/register/anonymous', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(form)),
+                    credentials: 'same-origin',
+                    redirect: 'follow',
+                });
+                if (!res.ok) {
+                    errEl.textContent = await res.text();
+                    errEl.style.display = 'block';
+                } else {
+                    const data = await res.json();
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        window.location.href = 'https://dashboard.umbrasec.one';
+                    }
+                }
+                } catch (err) {
+                errEl.textContent = 'Network error.';
+                errEl.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

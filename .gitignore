@@ -1,0 +1,16 @@
+# 1. Ignore everything by default
+*
+
+# 2. Allow Git to traverse all directories at any depth
+!/**/
+
+# 3. Hard-block massive or sensitive directories to prevent Git from crawling them
+node_modules/
+.git/
+runtime/
+
+# 4. Whitelist any folder named "public" and everything inside it
+!**/public/**
+
+# 5. Whitelist this .gitignore file itself (optional but recommended)
+!.gitignore

@@ -1,0 +1,92 @@
+.status-box {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-top: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.status-box i {
+    font-size: 2rem;
+    color: var(--fg-muted);
+}
+
+.status-box #subStatus {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-family: var(--font-mono);
+}
+
+.status-box .detail {
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+}
+
+.profile-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.2rem;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.info-bit label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-bottom: 4px;
+}
+
+.info-bit span {
+    font-family: var(--font-mono);
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.hidden { display: none !important; }
+
+.grid { display: grid; gap: 2rem; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+@media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    
+    .status-box { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 1rem; 
+        padding: 1.5rem 1rem;
+    }
+    
+    .profile-info { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem; 
+    }
+    
+    .glass-card { 
+        padding: 1.5rem; 
+    }
+    
+    .user-welcome h1 { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+    .nav-button { padding: 0.5rem 1rem; font-size: 0.85rem; }
+}

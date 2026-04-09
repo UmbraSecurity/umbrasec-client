@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UmbraSec | Suite & Projects</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+        <link rel="stylesheet" href="./index.css">
+    </head>
+    <body>
+        <div class="background"></div>
+
+        <header class="nav-container">
+            <div class="nav-inner">
+                <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+                <div class="nav-links">
+                    <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                    <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                    <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                    <a href="https://umbrasec.one/projects" class="nav-item active">Projects</a>
+                    <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                    <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+                </div>
+                <button class="mobile-menu-btn" onclick="document.querySelector('.mobile-overlay').classList.add('active');document.querySelector('.mobile-sidebar').classList.add('active');" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+            </div>
+        </header>
+
+        <div class="mobile-overlay" onclick="this.classList.remove('active');document.querySelector('.mobile-sidebar').classList.remove('active');"></div>
+        <div class="mobile-sidebar">
+            <button class="sidebar-close-btn" onclick="document.querySelector('.mobile-overlay').classList.remove('active');this.parentElement.classList.remove('active');" aria-label="Close menu"><i class="fas fa-times"></i></button>
+            <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+            <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+            <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+            <a href="https://umbrasec.one/projects" class="nav-item active">Projects</a>
+            <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+            <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+        </div>
+
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-badge">Suite &mdash; Tools &mdash; Open Source</div>
+                    <h1>The UmbraSec<br><span class="gradient-text">Suite & Projects.</span></h1>
+                    <p>Every service in the UmbraSec ecosystem, plus standalone security tools. All client-side code is open source &mdash; verify everything yourself.</p>
+                </div>
+            </section>
+
+            <section class="suite-section">
+                <div class="section-label">UmbraSec Suite</div>
+                <p class="section-desc">The core privacy tools included in your $3/mo subscription. Each service is built, maintained, and hosted on hardened infrastructure.</p>
+
+                <div class="suite-grid">
+                    <a href="https://umbrasec.one/vpn" class="suite-card">
+                        <div class="suite-icon"><i class="fas fa-shield-halved"></i></div>
+                        <div class="suite-info">
+                            <h3>Private VPN</h3>
+                            <p>Zero-log encrypted tunnel with CHACHA20-POLY1305 and AES-256-GCM. DNS leak protection, full-tunnel routing.</p>
+                        </div>
+                        <div class="suite-status"><span class="status-live">Live</span></div>
+                    </a>
+
+                    <a href="https://umbrasec.one/drive" class="suite-card">
+                        <div class="suite-icon"><i class="fas fa-cloud"></i></div>
+                        <div class="suite-info">
+                            <h3>Secure Drive</h3>
+                            <p>100GB encrypted storage with AES-256-GCM, zero-knowledge encryption mode, secure sharing, and burn-after-read file drops.</p>
+                        </div>
+                        <div class="suite-status"><span class="status-live">Live</span></div>
+                    </a>
+
+                    <a href="https://umbrasec.one/mail" class="suite-card">
+                        <div class="suite-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="suite-info">
+                            <h3>Private Mail</h3>
+                            <p>Encrypted mailbox with IMAP/SMTP, burner aliases, AI-powered assistant, and full webmail interface.</p>
+                        </div>
+                        <div class="suite-status"><span class="status-live">Live</span></div>
+                    </a>
+
+                    <div class="suite-card upcoming">
+                        <div class="suite-icon"><i class="fas fa-magnifying-glass"></i></div>
+                        <div class="suite-info">
+                            <h3>OSINT Recon</h3>
+                            <p>Automated reconnaissance and intelligence gathering. Domain, email, and identity lookup tools.</p>
+                        </div>
+                        <div class="suite-status"><span class="status-soon">Coming Soon</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="source-section">
+                <div class="section-label">Open Source</div>
+                <p class="section-desc">The complete client-side source for every UmbraSec service is published in a single monorepo. Audit the code, run your own static analysis, and verify zero telemetry.</p>
+
+                <div class="source-card">
+                    <div class="source-header">
+                        <div class="source-icon"><i class="fab fa-github"></i></div>
+                        <div>
+                            <h3>umbrasecurity/umbrasec-client</h3>
+                            <span class="repo-tag">Monorepo</span>
+                        </div>
+                    </div>
+                    <p>All client-side code for the UmbraSec suite &mdash; web, drive, mail, VPN manager &mdash; in one repository. No hidden imports, no analytics SDKs, no tracking pixels.</p>
+                    <div class="source-langs">
+                        <span><i class="fas fa-circle" style="color: #f1e05a; font-size: 0.5rem;"></i> JavaScript</span>
+                        <span><i class="fas fa-circle" style="color: #e34c26; font-size: 0.5rem;"></i> HTML</span>
+                        <span><i class="fas fa-circle" style="color: #563d7c; font-size: 0.5rem;"></i> CSS</span>
+                    </div>
+                    <div class="source-actions">
+                        <a href="https://github.com/UmbraSecurity/umbrasec-client" class="main-btn"><i class="fab fa-github"></i> View Repository</a>
+                        <div class="source-commands">
+                            <code>$ git clone https://github.com/UmbraSecurity/umbrasec-client.git</code>
+                            <code>$ grep -rn "analytics\|telemetry\|tracking" src/</code>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="projects-section">
+                <div class="section-label">My Projects</div>
+                <p class="section-desc">Personal projects and experiments. More coming soon.</p>
+
+                <div class="project-grid">
+                    <div class="project-card" style="opacity: 0.6; border-style: dashed;">
+                        <div class="project-header">
+                            <h3><i class="fas fa-code"></i> Coming Soon</h3>
+                        </div>
+                        <p class="project-desc">A new project is in the works. Check back later for details.</p>
+                    </div>
+
+                    <div class="project-card" style="opacity: 0.6; border-style: dashed;">
+                        <div class="project-header">
+                            <h3><i class="fas fa-flask"></i> Coming Soon</h3>
+                        </div>
+                        <p class="project-desc">Something experimental is being built. Stay tuned.</p>
+                    </div>
+
+                    <div class="project-card" style="opacity: 0.6; border-style: dashed;">
+                        <div class="project-header">
+                            <h3><i class="fas fa-terminal"></i> Coming Soon</h3>
+                        </div>
+                        <p class="project-desc">Another project in development. More details to follow.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-wrap">
+                <div class="footer-brand">
+                    <div class="brand">UMBRA<span>SECURITY</span></div>
+                    <p>Secure Operations & Infrastructure</p>
+                </div>
+                <div class="footer-bottom-bar">
+                    <p>&copy; 2026 Umbra Security. All rights reserved.</p>
+                    <div class="footer-socials">
+                        <a href="mailto:jason@umbrasec.one"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

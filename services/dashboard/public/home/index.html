@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <link rel="stylesheet" href="./quick_fix.css">
+    <link rel="stylesheet" href="./index.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div id="topNotification" class="top-notification hidden">
+        <i class="fas fa-info-circle"></i>
+        <span>No action required, you are currently subscribed.</span>
+        <i class="fas fa-times close-btn" onclick="this.parentElement.classList.add('hidden')"></i>
+    </div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <button type="button" class="nav-button" onclick="openProfile()"><i class="fas fa-user-circle"></i> <span>Profile</span></button>
+                <form method="POST" action="/logout" style="display:inline;">
+                    <button type="submit" class="nav-button"><i class="fas fa-right-from-bracket"></i> <span>Disconnect</span></button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="#" class="sidebar-link active"><i class="fas fa-layer-group"></i> Command Center</a>
+            <a href="#services" class="sidebar-link"><i class="fas fa-server"></i> Platform Services</a>
+            <a href="/subscription" class="sidebar-link"><i class="fas fa-credit-card"></i> Subscription</a>
+            <a href="/admin" id="adminLink" class="sidebar-link hidden" style="color:var(--quantum-1)"><i class="fas fa-terminal"></i> Admin Console</a>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-area">
+            <div id="messages"></div>
+
+            <section style="padding: 0 0 2rem 0;">
+                <div class="section-label">Secure Environment</div>
+                <h1 id="welcomeUser" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Initialize...</h1>
+                <p id="loadingText"><i class="fas fa-circle-notch fa-spin"></i> Decrypting session parameters...</p>
+            </section>
+
+            <div id="dashboardContent" class="hidden">
+                
+                <!-- Metrics Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card" id="statusCard">
+                        <div class="icon"><i class="fas fa-satellite-dish"></i></div>
+                        <h4>Network Status</h4>
+                        <div class="value" id="subStatusDisplay">ANALYZING</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-fingerprint"></i></div>
+                        <h4>Account ID</h4>
+                        <div class="value" style="font-size:1.1rem; line-height:1.6rem;" id="accountId">...</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-shield-virus"></i></div>
+                        <h4>Encryption</h4>
+                        <div class="value" style="color:var(--quantum-3)">AES-256</div>
+                    </div>
+                    <div class="stat-card" id="expiryCard">
+                        <div class="icon"><i class="fas fa-clock"></i></div>
+                        <h4>Renewal Date</h4>
+                        <div class="value" id="expiryDate">N/A</div>
+                    </div>
+                </div>
+
+                <div id="subscribeAction" class="glass-card hidden" style="margin-bottom:3rem; border-left: 4px solid var(--quantum-3); background: linear-gradient(to right, rgba(45, 212, 191, 0.05), transparent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color:#fff; margin-bottom:0.5rem;"><i class="fas fa-rocket" style="color: var(--quantum-3); margin-right: 10px;"></i> Welcome to UmbraSec</h3>
+                            <p style="margin:0; opacity: 0.8;">Your account is ready. Activate your subscription to gain full access to the encrypted VPN and your secure storage vault.</p>
+                        </div>
+                        <a href="/subscription" class="main-btn" style="padding: 1rem 2.5rem;">Activate Subscription</a>
+                    </div>
+                </div>
+
+                <h2 id="services" style="margin-bottom: 1.5rem; font-size:1.8rem;">Infrastructure</h2>
+                <div class="service-grid">
+                    <!-- VPN SERVICE -->
+                    <div class="glass-card" id="vpnCard">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="card-icon" style="color:var(--quantum-3)"><i class="fas fa-shield-halved"></i></div>
+                            <div class="service-status" id="vpnStatusBadge"></div>
+                        </div>
+                        
+                        <h3>Encrypted VPN</h3>
+                        <p>Full-tunnel OpenVPN with CHACHA20-POLY1305 encryption, TLS 1.3, and DNS leak protection via Quad9.</p>
+
+                        <div class="log-container">
+                            <div class="log-entry">> Cipher: CHACHA20-POLY1305 / AES-256-GCM</div>
+                            <div class="log-entry">> DNS Leak Protection: Enabled</div>
+                            <div class="log-entry">> Logging Policy: Zero-log</div>
+                            <div class="log-entry" id="vpnLogState">> Awaiting activation...</div>
+                        </div>
+
+                        <div id="vpnActions" class="action-bar">
+                            <a href="https://vpn.umbrasec.one" class="main-btn btn-sm">
+                                <i class="fas fa-external-link-alt"></i> Launch VPN Manager
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- MAIL SERVICE -->
+                    <div class="glass-card" id="mailCard">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="card-icon" style="color:var(--quantum-3)"><i class="fas fa-envelope-open-text"></i></div>
+                            <div class="service-status" id="mailStatusBadge"></div>
+                        </div>
+                        <h3>Secure Mail</h3>
+                        <p>Private email on your own domain. IMAP &amp; SMTP access with full encryption in transit.</p>
+
+                        <div class="log-container">
+                            <div class="log-entry">> Mail Server: Active</div>
+                            <div class="log-entry">> Protocol: IMAP + SMTP</div>
+                            <div class="log-entry" id="mailAddressLog">> Address: Loading...</div>
+                        </div>
+
+                        <div class="action-bar">
+                            <a href="https://mail.umbrasec.one" class="main-btn btn-sm">
+                                <i class="fas fa-external-link-alt"></i> Launch Mail
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- DRIVE SERVICE -->
+                    <div class="glass-card" id="driveCard">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="card-icon" style="color:var(--quantum-3)"><i class="fas fa-hard-drive"></i></div>
+                            <div class="service-status" id="driveStatusBadge"></div>
+                        </div>
+                        <h3>Secure Storage</h3>
+                        <p>100GB encrypted cloud storage. Files are encrypted with AES-256-GCM at rest with per-user key derivation.</p>
+
+                        <div class="log-container">
+                            <div class="log-entry">> Encryption: AES-256-GCM</div>
+                            <div class="log-entry">> Per-User Salt: Active</div>
+                            <div class="log-entry">> Drive Status: Ready</div>
+                        </div>
+                        
+                        <div class="action-bar">
+                            <a href="https://drive.umbrasec.one" class="main-btn btn-sm">
+                                <i class="fas fa-external-link-alt"></i> Launch Drive
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- OSINT SERVICE -->
+                    <div class="glass-card" id="osintcard">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="card-icon" style="color:#4ade80"><i class="fas fa-eye"></i></div>
+                            <div class="service-status" id="osintStatusBadge"></div>
+                        </div>
+                        <h3>OSINT Tool</h3>
+                        <p>Gather intel on people and organizations.</p>
+
+                        <div class="log-container">
+                            <div class="log-entry">> Intelligence Scrapers: Active</div>
+                            <div class="log-entry">> Public Databases: Found</div>
+                            <div class="log-entry">> OSINT Engine: Ready</div>
+                        </div>
+
+                        <div class="action-bar">
+                            <a href="https://osint.umbrasec.one" class="main-btn btn-sm">
+                                <i class="fas fa-external-link-alt"></i> Launch OSINT Tool
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Manager Modal -->
+    <div class="modal-overlay" id="profileOverlay">
+        <div class="glass-card modal-card" style="max-height:90vh; overflow-y:auto;">
+            <div class="modal-header">
+                <h3>Account Management</h3>
+                <button class="close-modal" onclick="closeProfile()"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div id="profileFields">
+                <!-- Identity Section -->
+                <div class="section-label" style="margin: 0 0 1rem 0;">Identity</div>
+                <div class="manager-field">
+                    <label>Username</label>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span id="profileUsername" style="color:var(--quantum-3); font-weight:600;">...</span>
+                        <button class="outline-btn" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="toggleEditUsername()"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <div id="editUsernameBox" class="hidden" style="margin-top:0.5rem;">
+                        <div style="display:flex; gap:0.5rem; margin-bottom:0.4rem;">
+                            <input type="text" id="newUsernameInput" class="search-input" placeholder="New username" style="flex:1;">
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="password" id="usernameChangePassword" class="search-input" placeholder="Current password (required)" style="flex:1;">
+                            <button class="main-btn" style="padding:0.4rem 1rem;" onclick="saveUsername()">Save</button>
+                        </div>
+                        <p style="font-size:0.7rem; color:var(--fg-muted); margin-top:0.4rem;">Changing your username also updates your email to <strong>username@umbrasec.one</strong></p>
+                    </div>
+                </div>
+                <div class="manager-field">
+                    <label>Email Address</label>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span id="profileEmail" style="color:var(--fg-muted);">...</span>
+                    </div>
+                    <p style="font-size:0.7rem; color:var(--fg-muted); margin-top:0.2rem;">Email is derived from your username and cannot be changed independently.</p>
+                </div>
+                <div class="manager-field">
+                    <label>Account ID</label>
+                    <div id="profileAccountId" style="font-size: 0.75rem; color:var(--fg-muted); font-family: var(--font-mono);">...</div>
+                </div>
+                <div class="manager-field">
+                    <label>Member Since</label>
+                    <div id="profileCreatedAt" style="font-size: 0.85rem; color:var(--fg-muted);">...</div>
+                </div>
+
+                <!-- Mail Section -->
+                <div id="profileMailSection">
+                    <div class="section-label" style="margin: 2rem 0 1rem 0;">Mail Account</div>
+                    <div class="manager-field">
+                        <label>Mail Address</label>
+                        <div id="profileMailAddress" style="color:var(--quantum-3); font-family:var(--font-mono); font-size:0.9rem;">No mail account</div>
+                    </div>
+                    <a href="https://mail.umbrasec.one" class="outline-btn" style="font-size:0.85rem; display:inline-block; margin-top:0.5rem;">
+                        <i class="fas fa-cog"></i> Mail Setup Guide (in settings)
+                    </a>
+                </div>
+
+                <!-- 2FA Section -->
+                <div class="section-label" style="margin: 2rem 0 1rem 0;">Security</div>
+                <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.02); margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">Email Verification</div>
+                            <div style="font-size: 0.75rem; color: var(--fg-muted); margin-top: 2px;">Require a code sent to your mail for sensitive actions (password, email changes)</div>
+                        </div>
+                        <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+                            <input type="checkbox" id="toggle2FA" onchange="toggle2FA(this.checked)" style="opacity:0;width:0;height:0;">
+                            <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:12px;transition:.2s;" id="toggle2FATrack"></span>
+                            <span style="position:absolute;height:20px;width:20px;left:2px;bottom:2px;background:white;border-radius:50%;transition:.2s;" id="toggle2FAThumb"></span>
+                        </label>
+                    </div>
+                    <div id="2faStatus" style="font-size: 0.75rem; color: var(--fg-muted);"></div>
+                </div>
+
+                <!-- Password Section -->
+                <div class="manager-field">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" class="search-input" placeholder="Enter current password">
+                </div>
+                <div class="manager-field">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" class="search-input" placeholder="Enter new password">
+                </div>
+                <div class="manager-field">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="search-input" placeholder="Repeat new password">
+                </div>
+                <button class="main-btn btn-full" onclick="changePassword()" id="btnChangePass">Update Password</button>
+                <p style="font-size:0.75rem; color:var(--fg-muted); margin-top:0.5rem;">Changing your password also updates your mail account password.</p>
+
+                <!-- Danger Zone -->
+                <div style="margin-top: 2.5rem; padding: 1.5rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; background: rgba(239,68,68,0.03);">
+                    <div class="section-label" style="color: #ef4444; margin: 0 0 0.5rem 0;">Danger Zone</div>
+                    <p style="font-size: 0.85rem; color: var(--fg-muted); margin-bottom: 1rem;">Permanently delete your account and all associated data. This action cannot be undone.</p>
+                    <button class="btn-danger btn-full" onclick="showDeleteConfirm()" style="padding:0.7rem; border-radius:8px; cursor:pointer; border:1px solid rgba(239,68,68,0.5); background:rgba(239,68,68,0.1); color:#ef4444; font-weight:600; width:100%;">
+                        <i class="fas fa-trash"></i> Delete My Account
+                    </button>
+                </div>
+            </div>
+
+            <div id="profileSuccess" class="hidden">
+                <div style="text-align:center; padding: 1rem;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--quantum-3); margin-bottom: 1rem;"></i>
+                    <h4>Security Updated</h4>
+                    <p style="font-size: 0.9rem; color: var(--fg-muted); margin-bottom: 1.5rem;">Your password has been successfully updated.</p>
+                    <button class="main-btn btn-full" onclick="closeProfile()">Done</button>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation -->
+            <div id="deleteConfirm" class="hidden">
+                <div style="text-align:center; padding: 1rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                    <h4 style="color: #ef4444;">Delete Account</h4>
+                    <p style="font-size: 0.9rem; color: var(--fg-muted); margin-bottom: 1.5rem;">This will permanently delete your account, mail, drive files, VPN profiles, and all data. Enter your password to confirm.</p>
+                    <div class="manager-field">
+                        <input type="password" id="deletePassword" class="search-input" placeholder="Enter your password to confirm">
+                    </div>
+                    <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                        <button class="outline-btn" style="flex:1;" onclick="cancelDelete()">Cancel</button>
+                        <button class="btn-danger" style="flex:1; padding:0.7rem; border-radius:8px; cursor:pointer; border:1px solid rgba(239,68,68,0.5); background:#ef4444; color:#fff; font-weight:600;" onclick="confirmDeleteAccount()" id="btnDeleteAccount">Delete Forever</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="./index.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Drive | UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <style>
+        .hero-mini {
+            padding: 8rem 5% 4rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-mini h1 {
+            margin-bottom: 1.5rem;
+        }
+        .spec-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        .spec-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.8rem;
+            color: var(--fg-muted);
+        }
+        .spec-list i {
+            color: var(--quantum-3);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-mini { padding: 6rem 5% 2rem; }
+            .hero-mini h1 { font-size: 2.5rem; }
+            .glass-card { padding: 1.5rem; }
+            .grid-2 { grid-template-columns: 1fr; gap: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .brand { font-size: 1.2rem; }
+            .hero-mini h1 { font-size: 2rem; }
+        }
+    </style>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KDT3CSZX');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDT3CSZX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="background"></div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                <a href="https://umbrasec.one/drive" class="nav-item active">Secure Drive</a>
+                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+            </div>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.mobile-overlay').classList.add('active');document.querySelector('.mobile-sidebar').classList.add('active');" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+    <div class="mobile-overlay" onclick="this.classList.remove('active');document.querySelector('.mobile-sidebar').classList.remove('active');"></div>
+    <div class="mobile-sidebar">
+        <button class="sidebar-close-btn" onclick="document.querySelector('.mobile-overlay').classList.remove('active');this.parentElement.classList.remove('active');"><i class="fas fa-times"></i></button>
+        <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+        <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+        <a href="https://umbrasec.one/drive" class="nav-item active">Secure Drive</a>
+        <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+        <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+        <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+    </div>
+
+    <main class="container">
+        <section class="hero-mini">
+            <div class="section-label">Private Cloud Storage</div>
+            <h1>The Personal <span class="gradient-text">Secure Drive</span></h1>
+            <p>Private and secure storage for your digital assets. Our high-performance storage solution provides a stable environment for your sensitive files, protected by server-side encryption.</p>
+            <div style="margin-top: 2.5rem;">
+                <a href="https://portal.umbrasec.one/register" class="main-btn">Get Started</a>
+            </div>
+        </section>
+
+        <section>
+            <div class="grid grid-2">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-vault"></i></div>
+                    <h3>Server-Side Encryption</h3>
+                    <p>All files are encrypted on our secure storage nodes as they are received. This ensures your data remains protected while at rest on our infrastructure.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> AES-256 Bit Encryption</li>
+                        <li><i class="fas fa-check"></i> Encrypted at Rest</li>
+                        <li><i class="fas fa-check"></i> Secure Transmission</li>
+                        <li><i class="fas fa-check"></i> Zero-Knowledge Encryption Mode</li>
+                    </ul>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-microchip"></i></div>
+                    <h3>Private Infrastructure</h3>
+                    <p>Unlike public cloud providers, your drive is hosted on a secure environment with strict access controls. We don't index or scan your files.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> No Data Indexing</li>
+                        <li><i class="fas fa-check"></i> Private File Serving</li>
+                        <li><i class="fas fa-check"></i> Per-User Encryption Salt</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="margin-top: 2rem;">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-share-nodes"></i></div>
+                    <h3>Controlled Sharing</h3>
+                    <p>Manage access to your files with secure sharing features, providing a safe way to collaborate or transfer data between individuals.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> Private Share Links</li>
+                        <li><i class="fas fa-check"></i> User-Controlled Access</li>
+                        <li><i class="fas fa-check"></i> Granular Permissions</li>
+                        <li><i class="fas fa-check"></i> Burn-After-Read File Drops</li>
+                    </ul>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-sync"></i></div>
+                    <h3>Stable Access</h3>
+                    <p>Reliable and consistent access to your data across all your devices, ensuring your personal files are always within reach.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> High Connectivity</li>
+                        <li><i class="fas fa-check"></i> Fast Upload/Download</li>
+                        <li><i class="fas fa-check"></i> Multi-Device Access</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-brand">
+                <div class="brand">UMBRA<span>SECURITY</span></div>
+                <p>Secure Operations & Infrastructure</p>
+            </div>
+            <div class="footer-bottom-bar">
+                <p>&copy; 2026 Umbra Security. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="mailto:jason@umbrasec.one"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

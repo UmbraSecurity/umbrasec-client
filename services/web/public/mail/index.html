@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Mail | UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <style>
+        .hero-mini {
+            padding: 8rem 5% 4rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-mini h1 {
+            margin-bottom: 1.5rem;
+        }
+        .spec-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        .spec-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.8rem;
+            color: var(--fg-muted);
+        }
+        .spec-list i {
+            color: var(--quantum-3);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-mini { padding: 6rem 5% 2rem; }
+            .hero-mini h1 { font-size: 2.5rem; }
+            .glass-card { padding: 1.5rem; }
+            .grid-2 { grid-template-columns: 1fr; gap: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .brand { font-size: 1.2rem; }
+            .hero-mini h1 { font-size: 2rem; }
+        }
+    </style>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KDT3CSZX');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDT3CSZX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="background"></div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                <a href="https://umbrasec.one/mail" class="nav-item active">Personal Mail</a>
+                <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+            </div>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.mobile-overlay').classList.add('active');document.querySelector('.mobile-sidebar').classList.add('active');" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+    <div class="mobile-overlay" onclick="this.classList.remove('active');document.querySelector('.mobile-sidebar').classList.remove('active');"></div>
+    <div class="mobile-sidebar">
+        <button class="sidebar-close-btn" onclick="document.querySelector('.mobile-overlay').classList.remove('active');this.parentElement.classList.remove('active');"><i class="fas fa-times"></i></button>
+        <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+        <a href="https://umbrasec.one/mail" class="nav-item active">Personal Mail</a>
+        <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+        <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+        <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+        <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+    </div>
+
+    <main class="container">
+        <section class="hero-mini">
+            <div class="section-label">Secure Communications</div>
+            <h1>The Private <span class="gradient-text">Personal Mail</span></h1>
+            <p>A sophisticated, secure mailbox designed for those who demand high confidentiality. Our US-based infrastructure provides a professional and stable platform for your critical communications.</p>
+            <div style="margin-top: 2.5rem;">
+                <a href="https://portal.umbrasec.one/register" class="main-btn">Get Started</a>
+            </div>
+        </section>
+
+        <section>
+            <div class="grid grid-2">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Encrypted Channels</h3>
+                    <p>All email traffic is protected via modern encryption protocols, ensuring that your messages stay private while in transit across the network.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> TLS/SSL Enforcement</li>
+                        <li><i class="fas fa-check"></i> Secure Web Access</li>
+                        <li><i class="fas fa-check"></i> Encrypted Storage</li>
+                    </ul>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-mask"></i></div>
+                    <h3>Strict Privacy</h3>
+                    <p>We do not track or index your emails for advertising. Your mailbox is your private space, operated with a focus on data integrity.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> No Ad-Tracking</li>
+                        <li><i class="fas fa-check"></i> No Personal Profiling</li>
+                        <li><i class="fas fa-check"></i> Minimized Metadata</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="margin-top: 2rem;">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-inbox"></i></div>
+                    <h3>Essential Security</h3>
+                    <p>Standard security features to keep your inbox safe from common threats, providing a clean and reliable communication tool.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> Spam Filtering</li>
+                        <li><i class="fas fa-check"></i> Virus Protection</li>
+                        <li><i class="fas fa-check"></i> 2FA Support</li>
+                        <li><i class="fas fa-check"></i> Burner Email Aliases</li>
+                        <li><i class="fas fa-check"></i> AI-Powered Email Analysis</li>
+                    </ul>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon"><i class="fas fa-server"></i></div>
+                    <h3>US-Based Infrastructure</h3>
+                    <p>Operated on secured infrastructure within the United States, offering reliable connectivity and DKIM-signed delivery for your communications.</p>
+                    <ul class="spec-list">
+                        <li><i class="fas fa-check"></i> US-Based Infrastructure</li>
+                        <li><i class="fas fa-check"></i> DKIM-Signed Outbound Mail</li>
+                        <li><i class="fas fa-check"></i> Let's Encrypt TLS Certificates</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-brand">
+                <div class="brand">UMBRA<span>SECURITY</span></div>
+                <p>Secure Operations & Infrastructure</p>
+            </div>
+            <div class="footer-bottom-bar">
+                <p>&copy; 2026 Umbra Security. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="mailto:jason@umbrasec.one"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

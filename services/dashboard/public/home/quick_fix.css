@@ -1,0 +1,69 @@
+/* Quick fix to align the 'launch' buttons side-by-side */
+.service-grid .glass-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    padding-bottom: 1.2rem !important; 
+}
+.service-grid .glass-card p {
+    flex-grow: 1 !important; /* This "eats" all empty space to shove the footer down */
+}
+.action-bar {
+    margin-top: 0 !important; 
+    padding-top: 1.2rem !important;
+    border-top: 1px solid var(--glass-border) !important;
+    display: flex !important;
+    
+    /* This centers the buttons horizontally */
+    justify-content: center !important; 
+    
+    /* This keeps them vertically aligned if they have different heights */
+    align-items: center !important; 
+    
+    gap: 1rem !important;
+    width: 100% !important;
+}
+.action-bar .main-btn, 
+.action-bar .outline-btn {
+    margin: 0; /* Remove any stray margins */
+}
+/* 1. The Card remains the flex parent */
+.service-grid .glass-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    padding-bottom: 1.2rem !important;
+}
+
+/* 2. Create/Target a wrapper for the log area */
+/* If you don't have a wrapper, this targets the log-container directly */
+.log-container {
+    /* This is the secret: it takes up all "extra" space in the card */
+    flex: 1 1 auto !important; 
+    
+    /* These properties center the text inside the container vertically */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; 
+    
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 1.5rem; /* Increased padding for better centering look */
+    margin: 1.5rem 0 !important; /* Forces a consistent gap from top/bottom */
+    border: 1px solid var(--glass-border);
+    min-height: 120px; /* Prevents the card from collapsing if logs are empty */
+}
+
+/* 3. Ensure the text inside the log stays left-aligned */
+.log-entry {
+    margin-bottom: 0.4rem;
+    text-align: left;
+    width: 100%;
+}
+
+/* 4. Keep the Action Bar at the very bottom */
+.action-bar {
+    margin-top: 0 !important; 
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--glass-border);
+}

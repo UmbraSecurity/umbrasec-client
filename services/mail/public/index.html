@@ -1,0 +1,3260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Umbra Mail</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0d14" id="themeColorMeta">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Umbra Mail">
+  <link rel="apple-touch-icon" href="/CDN/images/icon-192.png">
+  <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* --- Theme Variables --- */
+    :root {
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --accent: #2dd4bf;
+      --accent-hover: #14b8a6;
+      --accent-soft: rgba(45, 212, 191, 0.12);
+      --accent-softer: rgba(45, 212, 191, 0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+      --transition: 0.2s ease;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.2);
+      --sidebar-w: 240px;
+      --list-w: 380px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0d14;
+      --bg-secondary: #111520;
+      --bg-tertiary: #181d2a;
+      --bg-hover: #1c2233;
+      --bg-active: #1f2940;
+      --border: rgba(255,255,255,0.07);
+      --border-strong: rgba(255,255,255,0.12);
+      --fg: #e8edf5;
+      --fg-secondary: #9ba4b5;
+      --fg-tertiary: #6b7280;
+      --fg-inverse: #111;
+      --overlay: rgba(0,0,0,0.6);
+      --input-bg: rgba(255,255,255,0.04);
+      --badge-bg: rgba(255,255,255,0.06);
+      --scrollbar-track: transparent;
+      --scrollbar-thumb: rgba(255,255,255,0.1);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #22c55e;
+      --info: #3b82f6;
+      --cat-work: #3b82f6;
+      --cat-personal: #a855f7;
+      --cat-finance: #22c55e;
+      --cat-shopping: #f59e0b;
+      --cat-social: #ec4899;
+      --cat-newsletter: #6366f1;
+      --cat-security: #ef4444;
+      --cat-spam: #6b7280;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8f9fb;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f3f5;
+      --bg-hover: #e9ecf0;
+      --bg-active: #dde2e8;
+      --border: rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.14);
+      --fg: #111827;
+      --fg-secondary: #6b7280;
+      --fg-tertiary: #9ca3af;
+      --fg-inverse: #fff;
+      --overlay: rgba(0,0,0,0.4);
+      --input-bg: rgba(0,0,0,0.03);
+      --badge-bg: rgba(0,0,0,0.05);
+      --scrollbar-track: transparent;
+      --scrollbar-thumb: rgba(0,0,0,0.12);
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+      --info: #2563eb;
+      --cat-work: #2563eb;
+      --cat-personal: #9333ea;
+      --cat-finance: #16a34a;
+      --cat-shopping: #d97706;
+      --cat-social: #db2777;
+      --cat-newsletter: #4f46e5;
+      --cat-security: #dc2626;
+      --cat-spam: #6b7280;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    /* --- Base --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); }
+    body { font-family: var(--font); background: var(--bg); color: var(--fg); height: 100vh; overflow: hidden; transition: background var(--transition), color var(--transition); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+    a { color: var(--accent); text-decoration: none; }
+    input, textarea, select, button { font-family: inherit; }
+
+    /* --- Layout --- */
+    .app { display: flex; height: 100vh; }
+
+    /* --- Sidebar --- */
+    .sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--bg-secondary); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; transition: background var(--transition);
+      position: relative; z-index: 20;
+    }
+    .sidebar-header {
+      padding: 0; border-bottom: 1px solid var(--border); position: relative;
+      z-index: 101; overflow: visible;
+    }
+    .brand { font-weight: 700; font-size: 1rem; color: var(--accent); letter-spacing: -0.01em; }
+    .brand-sub { font-size: 0.7rem; color: var(--fg-tertiary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+
+    /* --- Account Selector --- */
+    .account-select {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer;
+      transition: background var(--transition); width: 100%; border: none; background: none; color: inherit; text-align: left;
+    }
+    .account-select:hover { background: var(--bg-hover); }
+    .account-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft);
+      color: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+    }
+    .account-select-info { flex: 1; min-width: 0; }
+    .account-select-email { font-size: 0.82rem; font-weight: 600; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .account-select-label { font-size: 0.68rem; color: var(--fg-tertiary); }
+    .account-select-chevron { color: var(--fg-tertiary); font-size: 0.7rem; transition: transform 0.2s; flex-shrink: 0; }
+    .account-select-chevron.open { transform: rotate(180deg); }
+
+    .account-dropdown {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+      background: var(--bg-secondary); border: 1px solid var(--border-strong);
+      border-top: none; border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow-lg); max-height: 0; overflow: hidden;
+      transition: max-height 0.25s ease, opacity 0.2s; opacity: 0;
+      display: flex; flex-direction: column;
+      min-width: 280px; width: max-content; max-width: 90vw;
+    }
+    .account-dropdown.open { max-height: 70vh; opacity: 1; overflow-y: auto; }
+    .account-dropdown-section { padding: 6px 0; overflow-y: auto; flex: 1; min-height: 0; }
+    .account-dropdown-label {
+      padding: 6px 16px; font-size: 0.65rem; font-weight: 700; color: var(--fg-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .account-dropdown-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer;
+      transition: background var(--transition); border: none; background: none; width: 100%;
+      color: inherit; text-align: left; box-sizing: border-box;
+    }
+    .account-dropdown-item:hover { background: var(--bg-hover); }
+    .account-dropdown-item.active { background: var(--accent-soft); }
+    .account-dropdown-item .acct-avatar {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--badge-bg);
+      color: var(--fg-tertiary); display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; flex-shrink: 0;
+    }
+    .account-dropdown-item.active .acct-avatar { background: var(--accent-soft); color: var(--accent); }
+    .account-dropdown-item .acct-info { flex: 1; min-width: 0; }
+    .account-dropdown-item .acct-email { font-size: 0.8rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .account-dropdown-item .acct-meta { font-size: 0.65rem; color: var(--fg-tertiary); }
+    .account-dropdown-item .acct-badge {
+      font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; flex-shrink: 0;
+    }
+    .account-dropdown-item .acct-badge.active { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .account-dropdown-item .acct-badge.inactive { background: var(--badge-bg); color: var(--fg-tertiary); }
+    .account-dropdown-item .acct-actions { display: flex; gap: 3px; flex-shrink: 0; }
+    .account-dropdown-item .acct-actions button {
+      border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--fg-secondary); padding: 4px 7px;
+      border-radius: var(--radius-xs); cursor: pointer; font-size: 0.7rem; transition: all var(--transition);
+    }
+    .account-dropdown-item .acct-actions button:hover { background: var(--bg-hover); color: var(--fg); border-color: var(--border-strong); }
+    .account-dropdown-item .acct-actions button.danger { border-color: rgba(239,68,68,0.15); background: rgba(239,68,68,0.06); color: var(--fg-tertiary); }
+    .account-dropdown-item .acct-actions button.danger:hover { background: rgba(239,68,68,0.15); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    .account-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+    .account-dropdown-create {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer;
+      transition: background var(--transition); border: none; background: none; width: 100%;
+      color: var(--accent); text-align: left; font-size: 0.82rem; font-weight: 600;
+    }
+    .account-dropdown-create:hover { background: var(--accent-softer); }
+    .account-dropdown-create i { width: 28px; text-align: center; }
+    .account-dropdown-footer {
+      padding: 10px 12px; border-top: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      display: flex; flex-direction: column; gap: 6px;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .account-dropdown-footer .burner-name-row {
+      display: flex; align-items: center; gap: 4px; font-size: 0.78rem;
+    }
+    .account-dropdown-footer .burner-name-row input {
+      width: 80px; padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+      background: var(--input-bg); color: var(--fg); font-size: 0.78rem; outline: none;
+      transition: border-color var(--transition);
+    }
+    .account-dropdown-footer .burner-name-row input:focus { border-color: var(--accent); }
+    .account-dropdown-footer .burner-name-row .suffix-preview {
+      color: var(--fg-tertiary); font-size: 0.7rem; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; min-width: 0;
+    }
+    .account-dropdown-footer .burner-action-row {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .account-dropdown-footer .burner-action-row input {
+      flex: 1; padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+      background: var(--input-bg); color: var(--fg); font-size: 0.78rem; outline: none;
+      transition: border-color var(--transition);
+    }
+    .account-dropdown-footer .burner-action-row input:focus { border-color: var(--accent); }
+    .account-dropdown-footer .burner-create-btn {
+      padding: 5px 12px; border: none; border-radius: var(--radius-xs); font-size: 0.78rem;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      background: var(--accent); color: var(--fg-inverse); transition: all var(--transition);
+    }
+    .account-dropdown-footer .burner-create-btn:hover { background: var(--accent-hover); }
+    .account-dropdown-footer .burner-create-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .compose-btn {
+      margin: 14px 14px 6px; padding: 10px; border: none; border-radius: var(--radius);
+      background: var(--accent); color: var(--fg-inverse); font-weight: 600; font-size: 0.875rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .compose-btn:hover { background: var(--accent-hover); }
+
+    .folder-list { flex: 1; overflow-y: auto; padding: 6px 8px; }
+    .folder-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm);
+      cursor: pointer; color: var(--fg-secondary); font-size: 0.875rem; transition: all var(--transition);
+      position: relative;
+    }
+    .folder-item:hover { background: var(--bg-hover); color: var(--fg); }
+    .folder-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .folder-item i { width: 18px; text-align: center; font-size: 0.85rem; }
+    .folder-badge {
+      margin-left: auto; background: var(--accent); color: var(--fg-inverse); font-size: 0.7rem;
+      font-weight: 700; padding: 1px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 10px 10px; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    }
+    .sidebar-footer button {
+      padding: 7px 6px; border: none; background: var(--input-bg);
+      color: var(--fg-secondary); border-radius: var(--radius-xs); cursor: pointer;
+      font-size: 0.75rem; transition: all var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sidebar-footer button:hover { background: var(--bg-hover); color: var(--fg); }
+
+    /* --- Mail List --- */
+    .mail-list-container {
+      width: var(--list-w); min-width: var(--list-w);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      background: var(--bg-secondary); transition: background var(--transition);
+    }
+    .list-header {
+      padding: 12px 14px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .list-title-row { display: flex; align-items: center; justify-content: space-between; }
+    .list-title { font-weight: 700; font-size: 1.05rem; }
+    .list-actions { display: flex; gap: 4px; }
+    .list-actions button {
+      border: none; background: none; color: var(--fg-secondary); cursor: pointer;
+      padding: 4px 6px; border-radius: var(--radius-xs); transition: all var(--transition); font-size: 0.9rem;
+    }
+    .list-actions button:hover { background: var(--bg-hover); color: var(--fg); }
+
+    .search-bar {
+      display: flex; align-items: center; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0 12px; transition: border-color var(--transition);
+    }
+    .search-bar:focus-within { border-color: var(--accent); }
+    .search-bar i { color: var(--fg-tertiary); font-size: 0.85rem; }
+    .search-bar input {
+      flex: 1; border: none; background: none; padding: 9px 10px; outline: none;
+      color: var(--fg); font-size: 0.85rem;
+    }
+    .search-bar input::placeholder { color: var(--fg-tertiary); }
+
+    .mail-list { flex: 1; overflow-y: auto; }
+    .mail-item {
+      padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
+      transition: background var(--transition); position: relative;
+    }
+    .mail-item:hover { background: var(--bg-hover); }
+    .mail-item.active { background: var(--accent-soft); }
+    .mail-item.unread .mail-sender { font-weight: 700; color: var(--fg); }
+    .mail-item.unread .mail-subject { font-weight: 600; color: var(--fg); }
+    .mail-item.unread::before {
+      content: ''; position: absolute; left: 4px; top: 50%; transform: translateY(-50%);
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    }
+
+    .mail-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .mail-sender { font-size: 0.85rem; color: var(--fg-secondary); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+    .mail-date { font-size: 0.72rem; color: var(--fg-tertiary); white-space: nowrap; }
+    .mail-subject { font-size: 0.875rem; font-weight: 500; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mail-snippet { font-size: 0.8rem; color: var(--fg-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mail-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+    .mail-tag {
+      font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .mail-tag.cat { background: var(--badge-bg); }
+    .mail-tag.priority-high { background: rgba(239,68,68,0.12); color: var(--danger); }
+    .mail-tag.priority-medium { background: rgba(245,158,11,0.12); color: var(--warning); }
+    .mail-tag.priority-low { background: rgba(34,197,94,0.12); color: var(--success); }
+    .mail-star { position: absolute; right: 14px; top: 32px; color: var(--fg-tertiary); cursor: pointer; font-size: 0.8rem; z-index: 1; }
+    .mail-star.starred { color: #f59e0b; }
+
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; color: var(--fg-tertiary); gap: 8px;
+    }
+    .empty-state i { font-size: 2.5rem; opacity: 0.3; }
+
+    /* --- Reader --- */
+    .reader {
+      flex: 1; display: flex; flex-direction: column; background: var(--bg);
+      transition: background var(--transition);
+    }
+    .reader-empty {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; color: var(--fg-tertiary); gap: 12px;
+    }
+    .reader-empty i { font-size: 3rem; opacity: 0.2; }
+
+    .reader-header {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    }
+    .reader-subject { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .reader-meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--fg-secondary); font-size: 0.82rem; align-items: center; }
+    .reader-meta-label { color: var(--fg-tertiary); }
+    .reader-toolbar { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+    .reader-toolbar button {
+      border: none; background: var(--input-bg); color: var(--fg-secondary);
+      padding: 7px 10px; border-radius: var(--radius-xs); cursor: pointer;
+      font-size: 0.85rem; transition: all var(--transition);
+    }
+    .reader-toolbar button:hover { background: var(--bg-hover); color: var(--fg); }
+    .reader-toolbar button.danger:hover { background: rgba(239,68,68,0.12); color: var(--danger); }
+
+    .ai-bar {
+      padding: 10px 24px; background: var(--accent-softer); border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; flex-wrap: wrap;
+    }
+    .ai-bar-label { color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; padding-top: 1px; }
+    .ai-bar-text { color: var(--fg-secondary); flex: 1; min-width: 0; line-height: 1.5; word-break: break-word; }
+    .ai-bar-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+    .ai-bar-actions button {
+      border: none; background: var(--accent-soft); color: var(--accent); padding: 4px 10px;
+      border-radius: var(--radius-xs); cursor: pointer; font-size: 0.78rem; font-weight: 500;
+      transition: all var(--transition); white-space: nowrap;
+    }
+    .ai-bar-actions button:hover { background: var(--accent); color: var(--fg-inverse); }
+
+    .reader-body { flex: 1; padding: 20px 24px; overflow-y: auto; line-height: 1.65; font-size: 0.92rem; color: var(--fg); }
+    .reader-body pre { white-space: pre-wrap; word-break: break-word; font-family: var(--font); }
+    .reader-body iframe.html-frame { width: 100%; border: none; min-height: 200px; border-radius: var(--radius-sm); }
+    [data-theme="dark"] .reader-body iframe.html-frame { background: var(--bg-secondary); color-scheme: dark; }
+    [data-theme="light"] .reader-body iframe.html-frame { background: #fff; }
+
+    .reply-suggestions {
+      padding: 12px 24px; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .reply-chip {
+      padding: 8px 14px; border-radius: var(--radius-sm); background: var(--input-bg);
+      border: 1px solid var(--border); color: var(--fg-secondary); font-size: 0.8rem;
+      cursor: pointer; transition: all var(--transition); flex: 1 1 auto;
+      min-width: 0; max-width: 100%; line-height: 1.45; word-break: break-word;
+    }
+    .reply-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-softer); }
+
+    /* --- Compose Modal --- */
+    .modal-overlay {
+      position: fixed; inset: 0; background: var(--overlay); z-index: 5000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg); width: 600px; max-width: 95vw; max-height: 90vh;
+      display: flex; flex-direction: column; transform: translateY(10px); transition: transform 0.2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; }
+    .modal-close {
+      border: none; background: none; color: var(--fg-secondary); cursor: pointer;
+      font-size: 1.1rem; padding: 4px;
+    }
+
+    .modal-body { padding: 16px 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 0.78rem; font-weight: 600; color: var(--fg-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .field input, .field textarea, .field select {
+      padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--input-bg); color: var(--fg); font-size: 0.875rem; outline: none;
+      transition: border-color var(--transition);
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
+    .field textarea { resize: vertical; min-height: 140px; line-height: 1.5; }
+    .field select { cursor: pointer; }
+
+    .btn {
+      padding: 8px 18px; border: none; border-radius: var(--radius-sm); font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; transition: all var(--transition);
+    }
+    .btn-primary { background: var(--accent); color: var(--fg-inverse); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--input-bg); color: var(--fg-secondary); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg-hover); color: var(--fg); }
+    .btn-ghost { background: none; color: var(--fg-secondary); }
+    .btn-ghost:hover { background: var(--bg-hover); color: var(--fg); }
+    .btn-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
+
+    .ai-assist-row { display: flex; gap: 6px; align-items: center; }
+    .ai-assist-row input { flex: 1; }
+
+    /* --- Settings Modal --- */
+    .settings-grid { display: grid; gap: 16px; }
+    .settings-section { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .settings-section:last-child { border-bottom: none; }
+    .settings-section h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; color: var(--fg); }
+    .settings-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; gap: 12px;
+    }
+    .settings-label { font-size: 0.85rem; color: var(--fg-secondary); }
+    .settings-desc { font-size: 0.75rem; color: var(--fg-tertiary); margin-top: 2px; }
+
+    /* Toggle switch */
+    .toggle { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; inset: 0; background: var(--border-strong);
+      border-radius: 22px; transition: var(--transition);
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; height: 16px; width: 16px; left: 3px; top: 3px;
+      background: var(--fg); border-radius: 50%; transition: var(--transition);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--fg-inverse); }
+
+    .api-key-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .api-key-row input { flex: 1; }
+    .api-key-status { font-size: 0.75rem; color: var(--success); }
+    .api-key-status.none { color: var(--fg-tertiary); }
+
+    /* --- Toast --- */
+    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9000; display: flex; flex-direction: column-reverse; gap: 8px; }
+    .toast {
+      padding: 10px 16px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px;
+      background: var(--bg-tertiary); border: 1px solid var(--border); box-shadow: var(--shadow-md);
+      font-size: 0.85rem; color: var(--fg); animation: toastIn 0.25s ease;
+      max-width: 360px;
+    }
+    .toast.success i { color: var(--success); }
+    .toast.error i { color: var(--danger); }
+    .toast.warning i { color: var(--warning); }
+    .toast.info i { color: var(--info); }
+    @keyframes toastIn { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* --- Loading --- */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
+    .spinner { width: 24px; height: 24px; border: 2.5px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+    .load-more-spinner { display: flex; align-items: center; justify-content: center; padding: 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+
+    /* --- Contacts Panel --- */
+    .contacts-panel {
+      position: fixed; inset: 0; z-index: 6000; background: var(--overlay);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .contacts-panel.open { opacity: 1; pointer-events: all; }
+    .contacts-panel-inner {
+      background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg); width: 520px; max-width: 95vw; max-height: 85vh;
+      display: flex; flex-direction: column; transform: translateY(10px); transition: transform 0.2s;
+    }
+    .contacts-panel.open .contacts-panel-inner { transform: translateY(0); }
+    .contacts-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .contacts-header h3 { font-size: 1rem; font-weight: 700; }
+    .contacts-search {
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 8px;
+    }
+    .contacts-search input {
+      flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--input-bg); color: var(--fg); font-size: 0.85rem; outline: none;
+    }
+    .contacts-search input:focus { border-color: var(--accent); }
+    .contacts-list {
+      flex: 1; overflow-y: auto; padding: 8px 0; max-height: 400px;
+    }
+    .contact-row {
+      display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .contact-row:hover { background: var(--bg-hover); }
+    .contact-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft);
+      color: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .contact-info { flex: 1; min-width: 0; }
+    .contact-info-name { font-size: 0.88rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .contact-info-email { font-size: 0.78rem; color: var(--fg-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .contact-actions { display: flex; gap: 4px; opacity: 0; transition: opacity var(--transition); }
+    .contact-row:hover .contact-actions { opacity: 1; }
+    .contact-actions button {
+      border: none; background: var(--input-bg); color: var(--fg-secondary); padding: 5px 8px;
+      border-radius: var(--radius-xs); cursor: pointer; font-size: 0.78rem;
+    }
+    .contact-actions button:hover { background: var(--bg-hover); color: var(--fg); }
+    .contact-actions button.danger:hover { color: var(--danger); }
+    .contacts-empty { text-align: center; padding: 40px 20px; color: var(--fg-tertiary); font-size: 0.85rem; }
+    .contacts-footer {
+      padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px;
+    }
+    .contacts-footer input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--input-bg); color: var(--fg); font-size: 0.85rem; outline: none; }
+    .contacts-footer input:focus { border-color: var(--accent); }
+
+    /* (Burner aliases now integrated into account dropdown above) */
+
+    /* --- Progress Bar --- */
+    .progress-bar-container {
+      width: 100%; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-container.inline { margin: 8px 0; }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent); border-radius: 2px;
+      animation: progressIndeterminate 1.5s ease-in-out infinite;
+      width: 40%; position: absolute; left: -40%;
+    }
+    @keyframes progressIndeterminate {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
+    .progress-bar-container.determinate .progress-bar-fill {
+      animation: none; left: 0; transition: width 0.3s ease;
+    }
+
+    /* --- Contact Autocomplete --- */
+    .autocomplete-wrapper { position: relative; }
+    .autocomplete-list {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+      background: var(--bg-secondary); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+      max-height: 180px; overflow-y: auto; display: none;
+    }
+    .autocomplete-list.visible { display: block; }
+    .autocomplete-item {
+      padding: 8px 12px; cursor: pointer; font-size: 0.85rem;
+      color: var(--fg-secondary); transition: background var(--transition);
+    }
+    .autocomplete-item:hover, .autocomplete-item.active { background: var(--bg-hover); color: var(--fg); }
+    .autocomplete-item .contact-name { font-weight: 500; color: var(--fg); }
+    .autocomplete-item .contact-email { font-size: 0.78rem; color: var(--fg-tertiary); margin-left: 6px; }
+
+    /* --- Multi-Select --- */
+    .mail-item.selected { background: var(--accent-soft); border-left: 3px solid var(--accent); }
+    .multi-select-bar {
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+      background: var(--accent-softer); border-bottom: 1px solid var(--border);
+      font-size: 0.85rem; color: var(--fg-secondary);
+    }
+    .multi-select-bar .count { font-weight: 700; color: var(--accent); }
+    .multi-select-bar .btn { padding: 4px 10px; font-size: 0.78rem; }
+
+    /* --- Context Menu --- */
+    .context-menu {
+      position: fixed; z-index: 8000; min-width: 200px;
+      background: var(--bg-secondary); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); box-shadow: var(--shadow-lg);
+      padding: 4px 0; display: none;
+    }
+    .context-menu.visible { display: block; }
+    .context-menu-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+      font-size: 0.85rem; color: var(--fg-secondary); cursor: pointer;
+      transition: all var(--transition); border: none; background: none; width: 100%;
+      text-align: left; font-family: inherit;
+    }
+    .context-menu-item:hover { background: var(--bg-hover); color: var(--fg); }
+    .context-menu-item.danger { color: var(--danger); }
+    .context-menu-item.danger:hover { background: rgba(239,68,68,0.1); }
+    .context-menu-item i { width: 16px; text-align: center; font-size: 0.8rem; }
+    .context-menu-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* --- Mail Setup Info --- */
+    .setup-info {
+      background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 14px; font-size: 0.82rem; margin-top: 8px;
+    }
+    .setup-info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0; border-bottom: 1px solid var(--border);
+    }
+    .setup-info-row:last-child { border-bottom: none; }
+    .setup-info-label { color: var(--fg-tertiary); min-width: 80px; }
+    .setup-info-value { color: var(--fg); font-weight: 500; font-family: 'Courier New', monospace; font-size: 0.8rem; }
+
+    /* --- Safety Badge --- */
+    .safety-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+      border-radius: 10px; font-size: 0.72rem; font-weight: 600;
+    }
+    .safety-badge.safe { background: rgba(34,197,94,0.12); color: var(--success); }
+    .safety-badge.warning { background: rgba(245,158,11,0.12); color: var(--warning); }
+    .safety-badge.danger { background: rgba(239,68,68,0.12); color: var(--danger); }
+
+    /* --- Mobile nav --- */
+    .mobile-header {
+      display: none; padding: 10px 14px; padding-top: max(10px, env(safe-area-inset-top));
+      background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+      align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100;
+    }
+    .mobile-header .brand { font-size: 0.95rem; }
+    .mobile-header button {
+      border: none; background: none; color: var(--fg-secondary); font-size: 1.1rem;
+      padding: 6px 8px; cursor: pointer; border-radius: var(--radius-xs);
+    }
+    .mobile-header button:hover { background: var(--bg-hover); color: var(--fg); }
+
+    .mobile-bottom-bar {
+      display: none; background: var(--bg); border-top: 1px solid var(--border);
+      padding: 6px 0; padding-bottom: max(6px, env(safe-area-inset-bottom));
+    }
+    .mobile-bottom-bar nav { display: flex; justify-content: space-around; }
+    .mobile-bottom-bar button {
+      border: none; background: none; color: var(--fg-tertiary); font-size: 0.65rem;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 4px 12px; cursor: pointer; border-radius: var(--radius-xs); transition: color var(--transition);
+    }
+    .mobile-bottom-bar button i { font-size: 1.15rem; }
+    .mobile-bottom-bar button.active { color: var(--accent); }
+
+    .reader-back {
+      display: none; border: none; background: none; color: var(--fg-secondary);
+      padding: 6px 8px; cursor: pointer; font-size: 0.9rem; border-radius: var(--radius-xs);
+      margin-right: 4px;
+    }
+    .reader-back:hover { background: var(--bg-hover); color: var(--fg); }
+
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 3500;
+    }
+
+    .mobile-compose-fab {
+      display: none; position: fixed; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); right: 16px; z-index: 200;
+      width: 52px; height: 52px; border-radius: 50%; border: none;
+      background: var(--accent); color: var(--fg-inverse); font-size: 1.2rem;
+      box-shadow: var(--shadow-lg); cursor: pointer;
+      align-items: center; justify-content: center; padding: 0;
+    }
+
+    .pull-to-refresh { display: none; }
+
+    /* --- Responsive: Tablet --- */
+    @media (max-width: 900px) {
+      .sidebar { width: 60px; min-width: 60px; }
+      .brand-sub, .folder-item span, .compose-btn span { display: none; }
+      .compose-btn { padding: 10px; }
+      .folder-badge { display: none; }
+      .sidebar-footer { grid-template-columns: 1fr 1fr; padding: 8px 6px; }
+      .sidebar-footer button span { display: none; }
+      .sidebar-footer button { padding: 8px 4px; font-size: 0.85rem; }
+      :root { --list-w: 280px; }
+      .account-dropdown { left: 0; right: auto; width: 280px; }
+      .account-select-info, .account-select-chevron { display: none; }
+    }
+
+    /* --- Responsive: Phone --- */
+    @media (max-width: 700px) {
+      .app { flex-direction: column; height: 100vh; height: 100dvh; }
+      .sidebar {
+        display: none; position: fixed; top: 0; left: 0; bottom: 0;
+        width: 280px; min-width: 280px; z-index: 4000;
+      }
+      .sidebar.open { display: flex; }
+      .sidebar-overlay.open { display: block; }
+      .brand-sub, .folder-item span, .compose-btn span { display: initial; }
+      .compose-btn { padding: 10px; }
+      .folder-badge { display: initial; }
+      .sidebar-footer button span { display: initial; }
+
+      .mobile-header { display: flex; }
+      .mobile-bottom-bar { display: block; }
+      .mobile-compose-fab { display: flex; align-items: center; justify-content: center; }
+      .compose-btn { display: none; }
+
+      .mail-list-container { width: 100%; min-width: 100%; flex: 1; overflow: hidden; border-right: none; }
+      .mail-list-container .list-header { position: sticky; top: 0; z-index: 10; background: var(--bg-secondary); }
+      .mail-list { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+      .pull-to-refresh {
+        display: flex; align-items: center; justify-content: center;
+        height: 0; overflow: hidden; transition: height 0.2s ease;
+        color: var(--fg-tertiary); font-size: 0.8rem; gap: 8px;
+      }
+      .pull-to-refresh.pulling { transition: none; }
+      .pull-to-refresh .ptr-spinner { display: none; }
+      .pull-to-refresh.refreshing .ptr-spinner { display: block; }
+      .pull-to-refresh.refreshing .ptr-arrow { display: none; }
+      .pull-to-refresh .ptr-arrow { transition: transform 0.2s ease; }
+      .pull-to-refresh.armed .ptr-arrow { transform: rotate(180deg); }
+      .mail-item { padding: 10px 14px; }
+      .mail-sender { max-width: 55vw; }
+      .mail-subject { font-size: 0.84rem; }
+      .mail-snippet { font-size: 0.78rem; }
+
+      .reader { display: none; }
+      .reader.visible {
+        display: flex; position: fixed; inset: 0; z-index: 3000;
+        padding-top: env(safe-area-inset-top);
+        background: var(--bg);
+      }
+      .reader-back { display: inline-flex; }
+      .reader-header { flex-wrap: wrap; padding: 12px 14px; gap: 8px; }
+      .reader-subject { font-size: 1rem; word-break: break-word; }
+      .reader-meta { font-size: 0.75rem; gap: 6px; }
+      .reader-toolbar { flex-wrap: wrap; gap: 2px; }
+      .reader-toolbar button { padding: 6px 8px; font-size: 0.82rem; }
+      .reader-body { padding: 14px; font-size: 0.88rem; }
+      .reader-body iframe.html-frame { min-height: 300px; }
+
+      .modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100dvh; border-radius: 0; }
+      .modal-body { flex: 1; }
+      .modal-footer { flex-wrap: wrap; gap: 6px; padding: 10px 14px; }
+      .modal-footer .btn { font-size: 0.8rem; padding: 8px 14px; }
+
+      .ai-bar { padding: 8px 12px; gap: 6px; font-size: 0.78rem; }
+      .ai-bar-label { font-size: 0.75rem; }
+      .ai-bar-text { font-size: 0.78rem; line-height: 1.4; }
+      .ai-bar-actions button { padding: 4px 8px; font-size: 0.72rem; }
+      .reply-suggestions { padding: 8px 12px; gap: 6px; }
+      .reply-chip { font-size: 0.76rem; padding: 7px 12px; }
+
+      .settings-grid { gap: 6px; }
+      .settings-section { padding: 10px 0; }
+      .settings-section h4 { font-size: 0.82rem; margin-bottom: 8px; }
+      .settings-row { flex-wrap: wrap; gap: 6px; padding: 5px 0; }
+      .settings-label { font-size: 0.82rem; }
+      .settings-desc { font-size: 0.72rem; }
+      .api-key-row { flex-wrap: wrap; gap: 6px; }
+      .api-key-row span:first-child { width: 100%; }
+      .api-key-row input { min-width: 0; }
+      .field label { font-size: 0.72rem; }
+      .field input, .field textarea, .field select { font-size: 0.82rem; padding: 8px 10px; }
+      .setup-info { font-size: 0.76rem; padding: 10px; }
+      .setup-info-row { flex-wrap: wrap; gap: 2px; }
+
+      .context-menu { min-width: 170px; }
+      .contacts-panel-inner { width: 100vw; max-width: 100vw; max-height: 100dvh; border-radius: 0; }
+      .contact-actions { opacity: 1; }
+
+      /* Multi-select toolbar */
+      .multi-select-bar { padding: 8px 10px; font-size: 0.8rem; flex-wrap: wrap; gap: 4px; }
+      .multi-select-bar .btn { font-size: 0.75rem; padding: 5px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button id="menuBtn" title="Menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="brand">Umbra Mail</div>
+      <div style="margin-left:auto;"></div>
+    </div>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header" id="sidebarHeader">
+        <button class="account-select" id="accountSelectBtn" type="button">
+          <div class="account-avatar" id="accountAvatar">?</div>
+          <div class="account-select-info">
+            <div class="account-select-email" id="userEmail">Loading...</div>
+            <div class="account-select-label" id="accountLabel">Primary account</div>
+          </div>
+          <i class="fa-solid fa-chevron-down account-select-chevron" id="accountChevron"></i>
+        </button>
+        <div class="account-dropdown" id="accountDropdown">
+          <div class="account-dropdown-section" id="accountDropdownList">
+            <!-- populated by JS -->
+          </div>
+          <div id="accountDropdownFooter">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+      <button class="compose-btn" id="composeBtn">
+        <i class="fa-solid fa-pen-to-square"></i> <span>Compose</span>
+      </button>
+      <nav class="folder-list" id="folderList"></nav>
+      <div class="sidebar-footer">
+        <button id="contactsBtn" title="Contacts"><i class="fa-solid fa-address-book"></i> <span>Contacts</span></button>
+        <button id="themeBtn" title="Toggle theme"><i class="fa-solid fa-circle-half-stroke"></i> <span>Theme</span></button>
+        <button id="settingsBtn" title="Settings"><i class="fa-solid fa-gear"></i> <span>Settings</span></button>
+        <button id="logoutBtn" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span></button>
+      </div>
+    </aside>
+
+    <!-- Mail List -->
+    <section class="mail-list-container">
+      <div class="list-header">
+        <div class="list-title-row">
+          <div class="list-title" id="listTitle">Inbox</div>
+          <div class="list-actions">
+            <button id="emptyTrashBtn" title="Empty Trash" class="hidden" style="color:var(--danger);"><i class="fa-solid fa-trash-can"></i> <span style="font-size:0.78rem;">Empty</span></button>
+            <button id="refreshBtn" title="Refresh"><i class="fa-solid fa-arrows-rotate"></i></button>
+          </div>
+        </div>
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" placeholder="Search emails..." autocomplete="off">
+        </div>
+      </div>
+      <div class="multi-select-bar hidden" id="multiSelectBar">
+        <span class="count" id="multiSelectCount">0</span> selected
+        <div style="flex:1;"></div>
+        <button class="btn btn-sm btn-secondary" id="msRead" title="Mark as Read"><i class="fa-solid fa-envelope-open"></i></button>
+        <button class="btn btn-sm btn-secondary" id="msUnread" title="Mark as Unread"><i class="fa-solid fa-envelope"></i></button>
+        <button class="btn btn-sm btn-secondary" id="msStar" title="Star"><i class="fa-regular fa-star"></i></button>
+        <button class="btn btn-sm btn-secondary" id="msArchive" title="Archive"><i class="fa-solid fa-box-archive"></i></button>
+        <button class="btn btn-sm btn-secondary" id="msJunk" title="Move to Junk"><i class="fa-solid fa-ban"></i></button>
+        <button class="btn btn-sm btn-secondary hidden" id="msRestore" title="Restore to Inbox"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+        <button class="btn btn-sm btn-danger" id="msDelete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        <button class="btn btn-sm btn-ghost" id="msClear" title="Clear Selection"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="pull-to-refresh" id="pullToRefresh">
+        <i class="fa-solid fa-arrow-down ptr-arrow"></i>
+        <div class="spinner ptr-spinner" style="width:18px;height:18px;"></div>
+        <span class="ptr-text">Pull to refresh</span>
+      </div>
+      <div class="mail-list" id="mailList">
+        <div class="empty-state"><i class="fa-solid fa-envelope-open"></i><span>No emails</span></div>
+      </div>
+    </section>
+
+    <!-- Reader -->
+    <main class="reader" id="readerPane">
+      <div class="reader-empty" id="readerEmpty">
+        <i class="fa-solid fa-envelope-open-text"></i>
+        <div>Select an email to read</div>
+      </div>
+      <div id="readerContent" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+        <div class="reader-header">
+          <div style="flex:1;min-width:0;">
+            <div class="reader-subject" id="readerSubject"></div>
+            <div class="reader-meta" id="readerMeta"></div>
+          </div>
+          <div class="reader-toolbar">
+            <button id="readerBackBtn" class="reader-back" title="Back"><i class="fa-solid fa-arrow-left"></i></button>
+            <button id="replyBtn" title="Reply"><i class="fa-solid fa-reply"></i></button>
+            <button id="forwardBtn" title="Forward"><i class="fa-solid fa-share"></i></button>
+            <button id="archiveBtn" title="Archive"><i class="fa-solid fa-box-archive"></i></button>
+            <button id="starEmailBtn" title="Star"><i class="fa-regular fa-star"></i></button>
+            <button id="deleteEmailBtn" title="Delete" class="danger"><i class="fa-solid fa-trash"></i></button>
+            <button id="closeEmailBtn" title="Close" style="margin-left:4px;"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <div id="aiBar" class="ai-bar hidden">
+          <div class="ai-bar-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Umbra AI</div>
+          <span id="aiSafetyBadge" class="safety-badge" style="display:none"></span>
+          <div class="ai-bar-text" id="aiSummary">Analyzing...</div>
+          <div class="ai-bar-actions">
+            <button id="aiSuggestBtn">Suggest Reply</button>
+          </div>
+        </div>
+        <div class="reader-body" id="readerBody"></div>
+        <div class="reply-suggestions hidden" id="replySuggestions"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Bar -->
+  <div class="mobile-bottom-bar" id="mobileBottomBar">
+    <nav>
+      <button data-tab="inbox" class="active"><i class="fa-solid fa-inbox"></i>Inbox</button>
+      <button data-tab="search"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+      <button data-tab="contacts"><i class="fa-solid fa-address-book"></i>Contacts</button>
+      <button data-tab="folders"><i class="fa-solid fa-folder"></i>Folders</button>
+      <button data-tab="settings"><i class="fa-solid fa-gear"></i>Settings</button>
+    </nav>
+  </div>
+
+  <!-- Mobile Compose FAB -->
+  <button class="mobile-compose-fab" id="composeFab"><i class="fa-solid fa-pen"></i></button>
+
+  <!-- Compose Modal -->
+  <div class="modal-overlay" id="composeModal">
+    <div class="modal" style="width:640px;">
+      <div class="modal-header">
+        <h3 id="composeTitle">New Message</h3>
+        <button class="modal-close" id="composeClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="field autocomplete-wrapper"><label>To</label><input id="composeTo" placeholder="recipient@example.com" autocomplete="off"><div class="autocomplete-list" id="toAutocomplete"></div></div>
+        <div class="field autocomplete-wrapper"><label>CC</label><input id="composeCc" placeholder="cc@example.com" autocomplete="off"><div class="autocomplete-list" id="ccAutocomplete"></div></div>
+        <div class="field"><label>Subject</label><input id="composeSubject" placeholder="Subject"></div>
+        <div class="field"><label>Message</label><textarea id="composeBody" rows="8" placeholder="Write your message..."></textarea></div>
+        <div class="ai-assist-row hidden" id="aiAssistRow">
+          <input id="aiAssistPrompt" placeholder="Describe what you want to write..." style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--input-bg);color:var(--fg);font-size:0.85rem;outline:none;">
+          <button class="btn btn-sm btn-secondary" id="aiAssistBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Draft</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="grammarCheckBtn" style="display:none;"><i class="fa-solid fa-spell-check"></i> Fix Grammar</button>
+        <button class="btn btn-secondary" id="genSubjectBtn" style="display:none;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Subject</button>
+        <span id="autosaveIndicator" style="font-size:0.75rem;color:var(--fg-tertiary);opacity:0;transition:opacity 0.3s;align-self:center;"></span>
+        <div style="flex:1;"></div>
+        <button class="btn btn-secondary" id="saveDraftBtn">Save Draft</button>
+        <button class="btn btn-primary" id="sendEmailBtn"><i class="fa-solid fa-paper-plane"></i> Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal" style="width:560px;max-height:85vh;">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button class="modal-close" id="settingsClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="overflow-y:auto;">
+        <div class="settings-grid">
+          <!-- Appearance -->
+          <div class="settings-section">
+            <h4><i class="fa-solid fa-palette"></i> Appearance</h4>
+            <div class="settings-row">
+              <div><div class="settings-label">Dark Mode</div></div>
+              <label class="toggle"><input type="checkbox" id="settingTheme"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <!-- Install App -->
+          <div class="settings-section hidden" id="pwaInstallSection">
+            <h4><i class="fa-solid fa-mobile-screen-button"></i> Install App</h4>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Install Umbra Mail</div>
+                <div class="settings-desc">Add to your home screen for a native app experience</div>
+              </div>
+              <button class="btn btn-sm btn-primary" id="pwaInstallBtn"><i class="fa-solid fa-download"></i> Install</button>
+            </div>
+          </div>
+
+          <!-- AI Configuration -->
+          <div class="settings-section">
+            <h4><i class="fa-solid fa-robot"></i> Umbra AI</h4>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Enable AI Features</div>
+                <div class="settings-desc">Summarize, categorize, and prioritize emails automatically</div>
+              </div>
+              <label class="toggle"><input type="checkbox" id="settingAiEnabled"><span class="toggle-slider"></span></label>
+            </div>
+            <div id="aiSettingsBlock">
+              <div class="field" style="margin-top:12px;">
+                <label>AI Provider</label>
+                <select id="settingAiProvider">
+                  <option value="">Select a provider...</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="claude">Anthropic Claude</option>
+                  <option value="deepseek">DeepSeek</option>
+                  <option value="openrouter">OpenRouter</option>
+                </select>
+              </div>
+              <div class="field" style="margin-top:8px;">
+                <label>Model</label>
+                <select id="settingAiModel"><option value="">Default</option></select>
+              </div>
+              <div class="settings-row" style="margin-top:12px;">
+                <div>
+                  <div class="settings-label">Auto Grammar Check</div>
+                  <div class="settings-desc">Automatically check grammar before sending emails</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="settingAutoGrammar"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="margin-top:14px;">
+                <label style="font-size:0.78rem;font-weight:600;color:var(--fg-secondary);text-transform:uppercase;letter-spacing:0.04em;">API Keys</label>
+                <div id="apiKeysContainer" style="margin-top:8px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email Settings -->
+          <div class="settings-section">
+            <h4><i class="fa-solid fa-envelope"></i> Email</h4>
+            <div class="field">
+              <label>Signature</label>
+              <textarea id="settingSignature" rows="3" placeholder="Your email signature..."></textarea>
+            </div>
+            <div class="field" style="margin-top:8px;">
+              <label>Emails per page</label>
+              <select id="settingPerPage">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top:8px;">
+              <label>Timezone</label>
+              <select id="settingTimezone">
+                <option value="">Auto (browser default)</option>
+              </select>
+              <div class="settings-desc">Used to display email dates and times</div>
+            </div>
+          </div>
+
+          <!-- Mail App Setup -->
+          <div class="settings-section">
+            <h4><i class="fa-solid fa-mobile-screen-button"></i> Use with Mail Apps</h4>
+            <div class="settings-desc" style="margin-bottom:10px;">
+              Configure Thunderbird, Apple Mail, Outlook, or any standard mail client with these settings.
+            </div>
+            <div style="font-weight:600;font-size:0.8rem;color:var(--fg-secondary);margin-bottom:4px;">Incoming Mail (IMAP)</div>
+            <div class="setup-info">
+              <div class="setup-info-row"><span class="setup-info-label">Server</span><span class="setup-info-value">mail.umbrasec.one</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Port</span><span class="setup-info-value">993</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Security</span><span class="setup-info-value">SSL/TLS</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Username</span><span class="setup-info-value" id="setupUsername">your@email.com</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Password</span><span class="setup-info-value">Your account password</span></div>
+            </div>
+            <div style="font-weight:600;font-size:0.8rem;color:var(--fg-secondary);margin:10px 0 4px;">Outgoing Mail (SMTP)</div>
+            <div class="setup-info">
+              <div class="setup-info-row"><span class="setup-info-label">Server</span><span class="setup-info-value">mail.umbrasec.one</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Port</span><span class="setup-info-value">465</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Security</span><span class="setup-info-value">SSL/TLS</span></div>
+              <div class="setup-info-row"><span class="setup-info-label">Auth</span><span class="setup-info-value">Your account password</span></div>
+            </div>
+            <div class="settings-desc" style="margin-top:10px;">
+              <i class="fa-solid fa-circle-info" style="color:var(--accent);margin-right:4px;"></i>
+              Use the same email and password you use to log in. IMAP keeps your mail synced across all devices.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="settingsCancel">Cancel</button>
+        <button class="btn btn-primary" id="settingsSave">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="context-menu" id="contextMenu">
+    <button class="context-menu-item" data-action="reply"><i class="fa-solid fa-reply"></i> Reply</button>
+    <button class="context-menu-item" data-action="forward"><i class="fa-solid fa-share"></i> Forward</button>
+    <div class="context-menu-divider"></div>
+    <button class="context-menu-item" data-action="star"><i class="fa-regular fa-star"></i> <span>Star</span></button>
+    <button class="context-menu-item" data-action="read"><i class="fa-solid fa-envelope-open"></i> <span>Mark as Read</span></button>
+    <div class="context-menu-divider"></div>
+    <button class="context-menu-item" data-action="archive"><i class="fa-solid fa-box-archive"></i> Archive</button>
+    <button class="context-menu-item" data-action="move-junk"><i class="fa-solid fa-ban"></i> Move to Junk</button>
+    <button class="context-menu-item" data-action="restore"><i class="fa-solid fa-arrow-rotate-left"></i> Restore</button>
+    <button class="context-menu-item" data-action="unarchive"><i class="fa-solid fa-box-open"></i> Unarchive</button>
+    <div class="context-menu-divider"></div>
+    <button class="context-menu-item danger" data-action="delete"><i class="fa-solid fa-trash"></i> Delete</button>
+    <button class="context-menu-item danger" data-action="permanent-delete"><i class="fa-solid fa-trash-can"></i> Delete Permanently</button>
+  </div>
+
+  <!-- Contacts Panel -->
+  <div class="contacts-panel" id="contactsPanel">
+    <div class="contacts-panel-inner">
+      <div class="contacts-header">
+        <h3><i class="fa-solid fa-address-book" style="margin-right:8px;color:var(--accent);"></i>Contacts</h3>
+        <button class="modal-close" id="contactsClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="contacts-search">
+        <input id="contactsSearchInput" placeholder="Search contacts..." autocomplete="off">
+      </div>
+      <div class="contacts-list" id="contactsList">
+        <div class="contacts-empty"><i class="fa-solid fa-address-book" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:8px;"></i>No contacts yet</div>
+      </div>
+      <div class="contacts-footer">
+        <input id="contactAddName" placeholder="Name">
+        <input id="contactAddEmail" placeholder="email@example.com">
+        <button class="btn btn-sm btn-primary" id="contactAddBtn"><i class="fa-solid fa-plus"></i> Add</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // --- State ---
+    const state = {
+      currentFolder: 'INBOX',
+      emails: [],
+      selected: null,
+      multiSelected: new Set(),
+      settings: { theme: 'dark', aiEnabled: false, aiProvider: null, aiModel: null, autoGrammar: false, signature: '', emailsPerPage: 25, timezone: '', apiKeys: {}, providers: [] },
+      folders: [],
+      searchTimeout: null,
+      loading: false,
+      loadingMore: false,
+      hasMore: false,
+      lastKnownUids: new Set(),
+      longPressTimer: null,
+      lastSpamCheck: 0,
+      mailAccounts: [], // New array to hold all selectable mail accounts (primary + burners)
+      activeMailAccountId: null, // ID of the currently active mail account for viewing
+      accountDropdownOpen: false,
+    };
+
+    // --- Toast ---
+    function toast(type, message) {
+      const c = document.getElementById('toastContainer');
+      const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${esc(message)}</span>`;
+      c.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+
+    // --- Dialogs (modern replacements for confirm/prompt) ---
+    function _createDialog(title, bodyHtml, buttons) {
+      return new Promise(resolve => {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay open';
+        overlay.style.zIndex = '10001';
+        const btnsHtml = buttons.map(b =>
+          `<button class="btn ${b.class || 'btn-secondary'}" data-action="${b.action}">${b.icon ? `<i class="fa-solid ${b.icon}"></i> ` : ''}${b.label}</button>`
+        ).join('');
+        overlay.innerHTML = `
+          <div class="modal" style="width:420px;max-width:92vw;">
+            <div class="modal-header"><h3>${title}</h3><button class="modal-close" data-action="_dismiss"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">${bodyHtml}</div>
+            <div class="modal-footer">${btnsHtml}</div>
+          </div>`;
+        const cleanup = (result) => { overlay.remove(); resolve(result); };
+        overlay.addEventListener('click', e => {
+          const action = e.target.closest('[data-action]')?.dataset.action;
+          if (action) cleanup(action);
+        });
+        overlay.addEventListener('click', e => { if (e.target === overlay) cleanup('_dismiss'); });
+        document.addEventListener('keydown', function handler(e) {
+          if (e.key === 'Escape') { document.removeEventListener('keydown', handler); cleanup('_dismiss'); }
+        });
+        document.body.appendChild(overlay);
+        const primary = overlay.querySelector('.btn-primary') || overlay.querySelector('.btn:last-child');
+        if (primary) primary.focus();
+      });
+    }
+
+    async function confirmDialog(message, { title = 'Confirm', confirmLabel = 'Confirm', confirmClass = 'btn-primary', danger = false, icon = '' } = {}) {
+      const iconHtml = icon ? `<i class="fa-solid ${icon}" style="font-size:1.5rem;color:${danger ? 'var(--danger)' : 'var(--accent)'};margin-bottom:8px;display:block;"></i>` : '';
+      const result = await _createDialog(
+        title,
+        `${iconHtml}<p style="color:var(--fg-secondary);font-size:0.9rem;line-height:1.6;">${message}</p>`,
+        [
+          { action: '_dismiss', label: 'Cancel', class: 'btn-secondary' },
+          { action: 'confirm', label: confirmLabel, class: danger ? 'btn-danger' : (confirmClass || 'btn-primary') },
+        ]
+      );
+      return result === 'confirm';
+    }
+
+    async function promptDialog(message, { title = 'Input', defaultValue = '', placeholder = '' } = {}) {
+      const inputId = '_prompt_' + Date.now();
+      const result = await _createDialog(
+        title,
+        `<p style="color:var(--fg-secondary);font-size:0.9rem;margin-bottom:10px;">${message}</p>
+         <div class="field"><input id="${inputId}" value="${esc(defaultValue)}" placeholder="${esc(placeholder)}" style="width:100%;"></div>`,
+        [
+          { action: '_dismiss', label: 'Cancel', class: 'btn-secondary' },
+          { action: 'confirm', label: 'OK', class: 'btn-primary' },
+        ]
+      );
+      if (result !== 'confirm') return null;
+      return document.getElementById(inputId)?.value ?? null;
+    }
+
+    // --- API ---
+    async function api(path, options = {}) {
+      const timeout = options.timeout || 45000;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      try {
+        const res = await fetch(`/api/mail${path}`, {
+          headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+          ...options,
+          signal: controller.signal,
+          body: options.body ? JSON.stringify(options.body) : undefined,
+        });
+        clearTimeout(timer);
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/login';
+          throw new Error('Session expired. Redirecting to login...');
+        }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+        return data;
+      } catch (err) {
+        clearTimeout(timer);
+        if (err.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw err;
+      }
+    }
+
+    // --- Theme ---
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('umbra-mail-theme', theme);
+      const toggle = document.getElementById('settingTheme');
+      if (toggle) toggle.checked = theme === 'dark';
+      // Update system bar color to match background
+      const meta = document.getElementById('themeColorMeta');
+      if (meta) meta.content = theme === 'dark' ? '#0a0d14' : '#f8f9fb';
+      // Update open email iframe if one exists
+      updateEmailIframeTheme(theme);
+    }
+
+    function updateEmailIframeTheme(theme) {
+      const iframe = document.querySelector('.reader-body iframe.html-frame');
+      if (!iframe || !state.selected?.htmlBody) return;
+      const isDark = theme === 'dark';
+      const darkCss = isDark
+        ? '<style>html,body{background:#111520!important;color:#e8edf5!important;color-scheme:dark}*{background-color:transparent!important;border-color:rgba(255,255,255,0.1)!important}body *:not(a):not(a *){color:#e8edf5!important}a,a *{color:#2dd4bf!important}img{opacity:.9;background-color:initial!important}table,tr,td,th{background-color:transparent!important}</style>'
+        : '';
+      iframe.srcdoc = darkCss + state.selected.htmlBody;
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+      // Save to server
+      api('/settings', { method: 'POST', body: { theme: current === 'dark' ? 'light' : 'dark' } }).catch(() => {});
+    }
+
+    // --- Folders ---
+    const FOLDER_ICONS = {
+      'INBOX': 'fa-inbox', 'Sent': 'fa-paper-plane', 'Drafts': 'fa-file-pen',
+      'Trash': 'fa-trash-can', 'Archive': 'fa-box-archive', 'Junk': 'fa-ban',
+      'Spam': 'fa-ban',
+    };
+
+    async function loadFolders() {
+      try {
+        const data = await api('/folders');
+        state.folders = data.folders;
+        // Ensure standard folders always appear
+        const requiredFolders = [
+          { name: 'INBOX', path: 'INBOX', specialUse: '\\Inbox' },
+          { name: 'Sent', path: 'Sent', specialUse: '\\Sent' },
+          { name: 'Drafts', path: 'Drafts', specialUse: '\\Drafts' },
+          { name: 'Archive', path: 'Archive', specialUse: '\\Archive' },
+          { name: 'Junk', path: 'Junk', specialUse: '\\Junk' },
+          { name: 'Trash', path: 'Trash', specialUse: '\\Trash' },
+        ];
+        for (const req of requiredFolders) {
+          const exists = state.folders.some(f =>
+            f.path === req.path || f.name === req.name ||
+            f.specialUse === req.specialUse
+          );
+          if (!exists) state.folders.push(req);
+        }
+        renderFolders();
+      } catch (err) {
+        toast('error', 'Failed to load folders');
+      }
+    }
+
+    function renderFolders() {
+      const container = document.getElementById('folderList');
+      container.innerHTML = state.folders.map(f => {
+        const name = f.name || f.path;
+        const icon = FOLDER_ICONS[name] || 'fa-folder';
+        const active = (f.path || f.name) === state.currentFolder ? 'active' : '';
+        return `<div class="folder-item ${active}" data-folder="${f.path || f.name}">
+          <i class="fa-solid ${icon}"></i><span>${name}</span>
+        </div>`;
+      }).join('');
+
+      container.querySelectorAll('.folder-item').forEach(el => {
+        el.addEventListener('click', () => {
+          state.currentFolder = el.dataset.folder;
+          document.getElementById('listTitle').textContent = el.querySelector('span')?.textContent || state.currentFolder;
+          renderFolders();
+          loadEmails();
+          updateToolbarForFolder();
+          // Show/hide Empty Trash button
+          const etBtn = document.getElementById('emptyTrashBtn');
+          if (state.currentFolder === 'Trash') etBtn.classList.remove('hidden');
+          else etBtn.classList.add('hidden');
+          // Close sidebar on mobile
+          document.getElementById('sidebar').classList.remove('open');
+          document.getElementById('sidebarOverlay').classList.remove('open');
+        });
+      });
+    }
+
+    // --- Email List ---
+    async function loadEmails(forceRefresh = false) {
+      const list = document.getElementById('mailList');
+      const searchQuery = document.getElementById('searchInput').value.trim();
+
+      // Check browser cache first (skip for searches)
+      if (!forceRefresh && !searchQuery) {
+        const cached = emailCache.get(state.currentFolder);
+        if (cached) {
+          state.emails = cached;
+          state.hasMore = true; // Assume more when loading from cache
+          renderEmailList();
+          return;
+        }
+      }
+
+      list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+      try {
+        let data;
+        if (searchQuery.length >= 1) {
+          data = await api(`/search?q=${encodeURIComponent(searchQuery)}&folder=${encodeURIComponent(state.currentFolder)}&limit=${state.settings.emailsPerPage}`);
+          state.hasMore = false; // Search doesn't support pagination
+        } else {
+          data = await api(`/folder/${encodeURIComponent(state.currentFolder)}?limit=${state.settings.emailsPerPage}&offset=0`);
+          state.hasMore = data.hasMore || false;
+        }
+        state.emails = data.emails || [];
+        // Cache the result (not searches)
+        if (!searchQuery) emailCache.set(state.currentFolder, state.emails);
+        renderEmailList();
+
+        // Auto spam filter: run in background for INBOX, throttled to every 5 minutes
+        if (state.currentFolder === 'INBOX' && state.settings.aiEnabled && Date.now() - state.lastSpamCheck > 5 * 60 * 1000) {
+          state.lastSpamCheck = Date.now();
+          api('/spam-filter', { method: 'POST' }).then(d => {
+            if (d.filtered > 0) {
+              toast('info', d.filtered + ' spam email(s) moved to Junk');
+              emailCache.invalidateAll();
+              loadEmails(true);
+            }
+          }).catch(() => {});
+        }
+      } catch (err) {
+        list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><span>${err.message}</span></div>`;
+        toast('error', err.message);
+      }
+    }
+
+    async function loadMoreEmails() {
+      if (state.loadingMore || !state.hasMore) return;
+      const searchQuery = document.getElementById('searchInput').value.trim();
+      if (searchQuery) return; // No pagination for search
+
+      state.loadingMore = true;
+      const list = document.getElementById('mailList');
+
+      // Add loading indicator at bottom
+      const loader = document.createElement('div');
+      loader.className = 'load-more-spinner';
+      loader.innerHTML = '<div class="spinner"></div>';
+      list.appendChild(loader);
+
+      try {
+        const offset = state.emails.length;
+        const data = await api(`/folder/${encodeURIComponent(state.currentFolder)}?limit=${state.settings.emailsPerPage}&offset=${offset}`);
+        const newEmails = data.emails || [];
+        state.hasMore = data.hasMore || false;
+
+        if (newEmails.length > 0) {
+          // Filter out duplicates by uid
+          const existingUids = new Set(state.emails.map(e => e.uid));
+          const uniqueNew = newEmails.filter(e => !existingUids.has(e.uid));
+          state.emails = [...state.emails, ...uniqueNew];
+          // Update cache with full list
+          emailCache.set(state.currentFolder, state.emails);
+        }
+
+        // Remove loader and re-render
+        loader.remove();
+        renderEmailList();
+      } catch (err) {
+        loader.remove();
+        toast('error', 'Failed to load more emails');
+      } finally {
+        state.loadingMore = false;
+      }
+    }
+
+    function renderEmailList() {
+      const list = document.getElementById('mailList');
+
+      if (!state.emails.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-envelope-open"></i><span>No emails found</span></div>';
+        return;
+      }
+
+      list.innerHTML = state.emails.map(e => {
+        const isUnread = !e.read;
+        const isActive = state.selected?.uid === e.uid;
+        const fromDisplay = e.from?.name || e.from?.address || e.from || 'Unknown';
+        const date = formatDate(e.date);
+        const isStarred = e.flagged || e.flags?.includes('\\Flagged');
+
+        let tags = '';
+        if (e.aiCategory) {
+          const catColor = `var(--cat-${e.aiCategory})`;
+          tags += `<span class="mail-tag cat" style="color:${catColor};border:1px solid ${catColor}30;">${e.aiCategory}</span>`;
+        }
+        if (e.aiPriority && e.aiPriority !== 'medium') {
+          tags += `<span class="mail-tag priority-${e.aiPriority}">${e.aiPriority}</span>`;
+        }
+
+        const isMultiSelected = state.multiSelected.has(e.uid);
+        return `<div class="mail-item ${isUnread ? 'unread' : ''} ${isActive ? 'active' : ''} ${isMultiSelected ? 'selected' : ''}" data-uid="${e.uid}">
+          <div class="mail-item-top">
+            <div class="mail-sender">${esc(fromDisplay)}</div>
+            <div class="mail-date">${date}</div>
+          </div>
+          <div class="mail-subject">${esc(e.subject)}</div>
+          <div class="mail-snippet">${esc(e.snippet || '')}</div>
+          ${tags ? `<div class="mail-tags">${tags}</div>` : ''}
+          <i class="mail-star fa-${isStarred ? 'solid starred' : 'regular'} fa-star" data-uid="${e.uid}"></i>
+        </div>`;
+      }).join('');
+
+      list.querySelectorAll('.mail-item').forEach(el => {
+        const uid = parseInt(el.dataset.uid);
+        el.addEventListener('click', (e) => {
+          if (e.target.closest('.mail-star')) return;
+          // Ctrl/Cmd+click for multi-select on desktop
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            toggleMultiSelect(uid, el);
+            return;
+          }
+          // If multi-selecting, toggle instead of opening
+          if (state.multiSelected.size > 0) {
+            toggleMultiSelect(uid, el);
+            return;
+          }
+          selectEmail(uid);
+        });
+        el.addEventListener('contextmenu', (e) => {
+          showContextMenu(e, uid);
+        });
+        // Long-press for multi-select on mobile
+        el.addEventListener('touchstart', (e) => {
+          state.longPressTimer = setTimeout(() => {
+            e.preventDefault();
+            toggleMultiSelect(uid, el);
+            // Vibrate for haptic feedback if available
+            if (navigator.vibrate) navigator.vibrate(30);
+          }, 500);
+        }, { passive: true });
+        el.addEventListener('touchend', () => clearTimeout(state.longPressTimer));
+        el.addEventListener('touchmove', () => clearTimeout(state.longPressTimer));
+      });
+
+      list.querySelectorAll('.mail-star').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleStar(parseInt(el.dataset.uid));
+        });
+      });
+    }
+
+    function formatDate(d) {
+      const date = new Date(d);
+      const now = new Date();
+      const diff = now - date;
+      const tz = state.settings.timezone || undefined; // undefined = browser default
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+      if (diff < 86400000 && date.getDate() === now.getDate()) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (diff < 604800000) return date.toLocaleDateString([], { weekday: 'short', timeZone: tz });
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric', timeZone: tz });
+    }
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    // --- Multi-Select ---
+    function toggleMultiSelect(uid, el) {
+      if (state.multiSelected.has(uid)) {
+        state.multiSelected.delete(uid);
+      } else {
+        state.multiSelected.add(uid);
+      }
+      updateMultiSelectUI();
+    }
+
+    function clearMultiSelect() {
+      state.multiSelected.clear();
+      updateMultiSelectUI();
+    }
+
+    function updateMultiSelectUI() {
+      const bar = document.getElementById('multiSelectBar');
+      const count = state.multiSelected.size;
+      if (count > 0) {
+        bar.classList.remove('hidden');
+        document.getElementById('multiSelectCount').textContent = count;
+      } else {
+        bar.classList.add('hidden');
+      }
+      // Update item highlights
+      document.querySelectorAll('.mail-item').forEach(el => {
+        const uid = parseInt(el.dataset.uid);
+        el.classList.toggle('selected', state.multiSelected.has(uid));
+      });
+    }
+
+    async function multiSelectAction(action) {
+      const uids = [...state.multiSelected];
+      if (!uids.length) return;
+
+      if (action === 'delete' && state.currentFolder === 'Trash') {
+        if (!await confirmDialog(`Permanently delete ${uids.length} email(s)? This cannot be undone.`, { title: 'Delete Forever', confirmLabel: 'Delete', danger: true, icon: 'fa-trash-can' })) return;
+      }
+
+      const promises = uids.map(uid => {
+        switch (action) {
+          case 'read': return api('/flag', { method: 'POST', body: { uid, flag: '\\Seen', set: true, folder: state.currentFolder } });
+          case 'unread': return api('/flag', { method: 'POST', body: { uid, flag: '\\Seen', set: false, folder: state.currentFolder } });
+          case 'star': return api('/flag', { method: 'POST', body: { uid, flag: '\\Flagged', set: true, folder: state.currentFolder } });
+          case 'archive': return api('/move', { method: 'POST', body: { uid, from: state.currentFolder, to: 'Archive' } });
+          case 'junk': return api('/move', { method: 'POST', body: { uid, from: state.currentFolder, to: 'Junk' } });
+          case 'restore': return api('/move', { method: 'POST', body: { uid, from: state.currentFolder, to: 'INBOX' } });
+          case 'delete':
+            if (state.currentFolder === 'Trash') return api('/permanent-delete', { method: 'POST', body: { uid, folder: state.currentFolder } });
+            return api('/delete', { method: 'POST', body: { uid, folder: state.currentFolder } });
+        }
+      });
+
+      try {
+        await Promise.all(promises);
+        toast('success', `${action} applied to ${uids.length} email(s)`);
+        clearMultiSelect();
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Notifications ---
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'default') {
+        await Notification.requestPermission();
+      }
+    }
+
+    function showNotification(title, body) {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      try {
+        const n = new Notification(title, {
+          body,
+          icon: '/CDN/images/icon-192.png',
+          badge: '/CDN/images/icon-192.png',
+          tag: 'umbra-mail-' + Date.now(),
+        });
+        n.onclick = () => { window.focus(); n.close(); };
+      } catch {
+        // SW notification fallback for mobile
+        if (navigator.serviceWorker?.controller) {
+          navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification(title, {
+              body,
+              icon: '/CDN/images/icon-192.png',
+              badge: '/CDN/images/icon-192.png',
+              tag: 'umbra-mail-' + Date.now(),
+            });
+          });
+        }
+      }
+    }
+
+    async function checkNewMail() {
+      try {
+        const data = await api('/status?folder=INBOX');
+        if (!data.messages) return;
+
+        const inboxData = await api('/folder/INBOX?limit=5');
+        const newEmails = (inboxData.emails || []).filter(e => !state.lastKnownUids.has(e.uid) && !e.read);
+
+        if (state.lastKnownUids.size > 0 && newEmails.length > 0) {
+          for (const e of newEmails) {
+            const from = e.from?.name || e.from?.address || 'Unknown';
+            const body = e.aiSummary || e.snippet || e.subject || '(no subject)';
+            showNotification('New email from ' + from, (e.subject || '(no subject)') + '\n' + body);
+          }
+          // Refresh list if viewing inbox
+          if (state.currentFolder === 'INBOX') {
+            emailCache.invalidate('INBOX');
+            loadEmails(true);
+          }
+        }
+
+        // Update known UIDs
+        for (const e of (inboxData.emails || [])) {
+          state.lastKnownUids.add(e.uid);
+        }
+      } catch { /* silent */ }
+    }
+
+    // --- Pull-to-Refresh (mobile) ---
+    (function initPullToRefresh() {
+      const mailList = document.getElementById('mailList');
+      const ptr = document.getElementById('pullToRefresh');
+      if (!ptr || !mailList) return;
+
+      const THRESHOLD = 60;
+      let startY = 0, pulling = false, distance = 0, refreshing = false;
+
+      function resetPtr() {
+        ptr.classList.remove('refreshing', 'pulling', 'armed');
+        ptr.style.height = '0';
+        distance = 0;
+        pulling = false;
+        refreshing = false;
+        const text = ptr.querySelector('.ptr-text');
+        if (text) text.textContent = 'Pull to refresh';
+      }
+
+      mailList.addEventListener('touchstart', e => {
+        if (refreshing) return;
+        if (mailList.scrollTop === 0 && e.touches.length === 1) {
+          startY = e.touches[0].clientY;
+          pulling = true;
+          distance = 0;
+        }
+      }, { passive: true });
+
+      mailList.addEventListener('touchmove', e => {
+        if (!pulling || refreshing) return;
+        const dy = e.touches[0].clientY - startY;
+        if (dy < 0) { distance = 0; ptr.style.height = '0'; return; }
+        distance = Math.min(dy * 0.5, 80);
+        ptr.style.height = distance + 'px';
+        ptr.classList.add('pulling');
+        ptr.classList.toggle('armed', distance >= THRESHOLD);
+        const text = ptr.querySelector('.ptr-text');
+        if (text) text.textContent = distance >= THRESHOLD ? 'Release to refresh' : 'Pull to refresh';
+      }, { passive: true });
+
+      mailList.addEventListener('touchend', async () => {
+        if (!pulling || refreshing) return;
+        pulling = false;
+        ptr.classList.remove('pulling');
+
+        if (distance >= THRESHOLD) {
+          refreshing = true;
+          ptr.classList.add('refreshing');
+          ptr.classList.remove('armed');
+          ptr.style.height = '40px';
+          const text = ptr.querySelector('.ptr-text');
+          if (text) text.textContent = 'Refreshing...';
+          emailCache.invalidate(state.currentFolder);
+          try {
+            await loadEmails(true);
+          } finally {
+            resetPtr();
+          }
+          return;
+        }
+        ptr.style.height = '0';
+        distance = 0;
+      });
+    })();
+
+    // --- Infinite Scroll ---
+    (function initInfiniteScroll() {
+      const mailList = document.getElementById('mailList');
+      if (!mailList) return;
+
+      mailList.addEventListener('scroll', () => {
+        if (state.loadingMore || !state.hasMore) return;
+        const { scrollTop, scrollHeight, clientHeight } = mailList;
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+          loadMoreEmails();
+        }
+      });
+    })();
+
+    function linkify(escaped) {
+      // Turn URLs in already-escaped text into clickable links
+      return escaped.replace(
+        /(?:https?:\/\/|www\.)[^\s<&]+/g,
+        url => {
+          const href = url.startsWith('www.') ? 'https://' + url : url;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        }
+      );
+    }
+
+    // --- Email Reader ---
+    async function selectEmail(uid) {
+      let email = state.emails.find(e => e.uid === uid);
+      if (!email) return;
+      state.selected = email;
+      renderEmailList();
+
+      const readerEmpty = document.getElementById('readerEmpty');
+      const readerContent = document.getElementById('readerContent');
+      const readerPane = document.getElementById('readerPane');
+      readerEmpty.classList.add('hidden');
+      readerContent.classList.remove('hidden');
+      readerPane.classList.add('visible');
+
+      // Show loading state while fetching full email
+      document.getElementById('readerSubject').textContent = email.subject || 'Loading...';
+      document.getElementById('readerBody').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+      // Fetch full email to get htmlBody + AI analysis
+      let aiAnalysis = null;
+      try {
+        const full = await api('/message/' + uid + '?folder=' + encodeURIComponent(state.currentFolder));
+        if (full.email) {
+          Object.assign(email, full.email);
+          state.selected = email;
+        }
+        aiAnalysis = full.aiAnalysis || null;
+      } catch { /* use list data as fallback */ }
+
+      document.getElementById('readerSubject').textContent = email.subject;
+
+      const fromStr = email.from?.name ? `${esc(email.from.name)} <${esc(email.from.address)}>` : esc(email.from?.address || 'Unknown');
+      const toStr = (email.to || []).map(t => t.name ? `${esc(t.name)} <${esc(t.address)}>` : esc(t.address)).join(', ') || '';
+      const tz = state.settings.timezone || undefined;
+      document.getElementById('readerMeta').innerHTML = `
+        <span><span class="reader-meta-label">From:</span> ${fromStr}</span>
+        <span><span class="reader-meta-label">To:</span> ${toStr}</span>
+        <span><span class="reader-meta-label">Date:</span> ${new Date(email.date).toLocaleString([], { timeZone: tz })}</span>
+      `;
+
+      if (email.htmlBody) {
+        // Render HTML email in a sandboxed iframe for safety
+        const iframe = document.createElement('iframe');
+        iframe.className = 'html-frame';
+        iframe.sandbox = 'allow-popups';
+        const readerBody = document.getElementById('readerBody');
+        readerBody.innerHTML = '';
+        readerBody.appendChild(iframe);
+
+        // Inject dark mode styles into email HTML when dark theme is active
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const darkCss = isDark
+          ? '<style>html,body{background:#111520!important;color:#e8edf5!important;color-scheme:dark}*{background-color:transparent!important;border-color:rgba(255,255,255,0.1)!important}body *:not(a):not(a *){color:#e8edf5!important}a,a *{color:#2dd4bf!important}img{opacity:.9;background-color:initial!important}table,tr,td,th{background-color:transparent!important}</style>'
+          : '';
+        iframe.srcdoc = darkCss + email.htmlBody;
+
+        iframe.onload = () => {
+          // Auto-resize to content height
+          try {
+            const h = iframe.contentDocument.documentElement.scrollHeight;
+            iframe.style.height = Math.max(h + 20, 200) + 'px';
+          } catch { /* cross-origin fallback */ iframe.style.height = '600px'; }
+        };
+      } else {
+        document.getElementById('readerBody').innerHTML = `<pre>${linkify(esc(email.body || email.snippet || ''))}</pre>`;
+      }
+
+      // Star button state
+      const starBtn = document.getElementById('starEmailBtn');
+      const isStarred = email.flagged || email.flags?.includes('\\Flagged');
+      starBtn.innerHTML = `<i class="fa-${isStarred ? 'solid' : 'regular'} fa-star" style="${isStarred ? 'color:#f59e0b;' : ''}"></i>`;
+
+      // AI bar
+      const aiBar = document.getElementById('aiBar');
+      const replySugs = document.getElementById('replySuggestions');
+      replySugs.classList.add('hidden');
+      replySugs.innerHTML = '';
+
+      const safetyBadge = document.getElementById('aiSafetyBadge');
+      if (state.settings.aiEnabled) {
+        aiBar.classList.remove('hidden');
+        if (aiAnalysis) {
+          // Render combined AI analysis (summary + safety badge)
+          document.getElementById('aiSummary').textContent = aiAnalysis.summary || email.aiSummary || 'No summary';
+          if (aiAnalysis.safetyScore != null) {
+            let badgeClass = 'safe';
+            if (aiAnalysis.safetyScore <= 3) badgeClass = 'danger';
+            else if (aiAnalysis.safetyScore <= 6) badgeClass = 'warning';
+            safetyBadge.className = 'safety-badge ' + badgeClass;
+            safetyBadge.innerHTML = '<i class="fa-solid fa-shield"></i> ' + (aiAnalysis.safetyLabel || aiAnalysis.safetyScore + '/10');
+            safetyBadge.style.display = '';
+            if (aiAnalysis.concerns && aiAnalysis.concerns.length > 0) {
+              toast(badgeClass === 'safe' ? 'success' : 'warning', aiAnalysis.concerns.join('; '));
+            }
+          } else {
+            safetyBadge.style.display = 'none';
+          }
+        } else if (email.aiSummary) {
+          document.getElementById('aiSummary').textContent = email.aiSummary;
+          safetyBadge.style.display = 'none';
+        } else {
+          document.getElementById('aiSummary').textContent = 'Analysis unavailable';
+          safetyBadge.style.display = 'none';
+        }
+      } else {
+        aiBar.classList.add('hidden');
+        safetyBadge.style.display = 'none';
+      }
+
+      // Mark as read
+      if (!email.read) {
+        email.read = true;
+        email.flags = [...(email.flags || []), '\\Seen'];
+        emailCache.invalidate(state.currentFolder);
+        api('/flag', { method: 'POST', body: { uid, flag: '\\Seen', set: true, folder: state.currentFolder } }).catch(() => {});
+        renderEmailList();
+      }
+    }
+
+    async function toggleStar(uid) {
+      const email = state.emails.find(e => e.uid === uid);
+      if (!email) return;
+      const isStarred = email.flagged || email.flags?.includes('\\Flagged');
+      const newState = !isStarred;
+
+      try {
+        await api('/flag', { method: 'POST', body: { uid, flag: '\\Flagged', set: newState, folder: state.currentFolder } });
+        email.flagged = newState;
+        if (newState) email.flags = [...(email.flags || []), '\\Flagged'];
+        else email.flags = (email.flags || []).filter(f => f !== '\\Flagged');
+        emailCache.invalidate(state.currentFolder);
+        renderEmailList();
+        if (state.selected?.uid === uid) selectEmail(uid);
+      } catch (err) {
+        toast('error', err.message);
+      }
+    }
+
+    // --- Context Menu ---
+    let contextMenuTarget = null;
+
+    function showContextMenu(e, uid) {
+      e.preventDefault();
+      const email = state.emails.find(em => em.uid === uid);
+      if (!email) return;
+      contextMenuTarget = email;
+
+      const menu = document.getElementById('contextMenu');
+      const isStarred = email.flagged || email.flags?.includes('\\Flagged');
+      const isRead = email.read || email.flags?.includes('\\Seen');
+      const isTrash = state.currentFolder === 'Trash';
+      const isArchive = state.currentFolder === 'Archive';
+      const isJunk = state.currentFolder === 'Junk';
+      const isSent = state.currentFolder === 'Sent';
+      const isDrafts = state.currentFolder === 'Drafts';
+
+      menu.querySelector('[data-action="star"] span').textContent = isStarred ? 'Unstar' : 'Star';
+      menu.querySelector('[data-action="star"] i').className = `fa-${isStarred ? 'solid' : 'regular'} fa-star`;
+      menu.querySelector('[data-action="read"] span').textContent = isRead ? 'Mark as Unread' : 'Mark as Read';
+      menu.querySelector('[data-action="read"] i').className = `fa-solid fa-envelope${isRead ? '' : '-open'}`;
+
+      // Show/hide folder-specific actions
+      menu.querySelector('[data-action="archive"]').style.display = isTrash || isArchive || isJunk || isDrafts ? 'none' : '';
+      menu.querySelector('[data-action="move-junk"]').style.display = isTrash || isArchive || isJunk || isSent || isDrafts ? 'none' : '';
+      menu.querySelector('[data-action="delete"]').style.display = isTrash ? 'none' : '';
+      menu.querySelector('[data-action="restore"]').style.display = isTrash || isArchive || isJunk ? '' : 'none';
+      menu.querySelector('[data-action="unarchive"]').style.display = isArchive ? '' : 'none';
+      menu.querySelector('[data-action="permanent-delete"]').style.display = isTrash || isJunk ? '' : 'none';
+
+      // Position menu
+      const x = Math.min(e.clientX, window.innerWidth - 210);
+      const y = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 10);
+      menu.style.left = x + 'px';
+      menu.style.top = y + 'px';
+      menu.classList.add('visible');
+    }
+
+    function hideContextMenu() {
+      document.getElementById('contextMenu').classList.remove('visible');
+      contextMenuTarget = null;
+    }
+
+    async function handleContextAction(action) {
+      const email = contextMenuTarget;
+      if (!email) return;
+      hideContextMenu();
+
+      switch (action) {
+        case 'reply':
+          openCompose({
+            to: email.from?.address || '',
+            subject: 'Re: ' + email.subject,
+            body: '\n\n---\nOn ' + new Date(email.date).toLocaleString() + ', ' + (email.from?.address || '') + ' wrote:\n' + (email.body || email.snippet || '').substring(0, 1000),
+            inReplyTo: email.messageId,
+          });
+          break;
+        case 'forward':
+          openCompose({
+            subject: 'Fwd: ' + email.subject,
+            body: '\n\n--- Forwarded message ---\nFrom: ' + (email.from?.address || '') + '\nDate: ' + new Date(email.date).toLocaleString() + '\nSubject: ' + email.subject + '\n\n' + (email.body || email.snippet || ''),
+          });
+          break;
+        case 'star':
+          toggleStar(email.uid);
+          break;
+        case 'read': {
+          const isRead = email.read || email.flags?.includes('\\Seen');
+          try {
+            await api('/flag', { method: 'POST', body: { uid: email.uid, flag: '\\Seen', set: !isRead, folder: state.currentFolder } });
+            email.read = !isRead;
+            if (!isRead) email.flags = [...(email.flags || []), '\\Seen'];
+            else email.flags = (email.flags || []).filter(f => f !== '\\Seen');
+            emailCache.invalidate(state.currentFolder);
+            renderEmailList();
+          } catch (err) { toast('error', err.message); }
+          break;
+        }
+        case 'archive':
+          try {
+            await api('/move', { method: 'POST', body: { uid: email.uid, from: state.currentFolder, to: 'Archive' } });
+            toast('success', 'Archived');
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+        case 'move-junk':
+          try {
+            await api('/move', { method: 'POST', body: { uid: email.uid, from: state.currentFolder, to: 'Junk' } });
+            toast('success', 'Moved to Junk');
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+        case 'restore':
+          try {
+            await api('/move', { method: 'POST', body: { uid: email.uid, from: state.currentFolder, to: 'INBOX' } });
+            toast('success', 'Restored to Inbox');
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+        case 'unarchive':
+          try {
+            await api('/move', { method: 'POST', body: { uid: email.uid, from: state.currentFolder, to: 'INBOX' } });
+            toast('success', 'Moved back to Inbox');
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+        case 'permanent-delete':
+          if (!await confirmDialog('Permanently delete this email? This cannot be undone.', { title: 'Delete Forever', confirmLabel: 'Delete', danger: true, icon: 'fa-trash-can' })) break;
+          try {
+            await api('/permanent-delete', { method: 'POST', body: { uid: email.uid, folder: state.currentFolder } });
+            toast('success', 'Permanently deleted');
+            if (state.selected?.uid === email.uid) closeEmail();
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+        case 'delete':
+          try {
+            await api('/delete', { method: 'POST', body: { uid: email.uid, folder: state.currentFolder } });
+            toast('success', 'Moved to Trash');
+            if (state.selected?.uid === email.uid) closeEmail();
+            emailCache.invalidateAll();
+            loadEmails(true);
+          } catch (err) { toast('error', err.message); }
+          break;
+      }
+    }
+
+    async function deleteEmail() {
+      if (!state.selected) return;
+      const isTrash = state.currentFolder === 'Trash';
+      if (isTrash && !await confirmDialog('Permanently delete this email? This cannot be undone.', { title: 'Delete Forever', confirmLabel: 'Delete', danger: true, icon: 'fa-trash-can' })) return;
+      try {
+        if (isTrash) {
+          await api('/permanent-delete', { method: 'POST', body: { uid: state.selected.uid, folder: state.currentFolder } });
+          toast('success', 'Permanently deleted');
+        } else {
+          await api('/delete', { method: 'POST', body: { uid: state.selected.uid, folder: state.currentFolder } });
+          toast('success', 'Moved to Trash');
+        }
+        closeEmail();
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function archiveEmail() {
+      if (!state.selected) return;
+      const isArchive = state.currentFolder === 'Archive';
+      const isTrash = state.currentFolder === 'Trash';
+      const isJunk = state.currentFolder === 'Junk';
+      try {
+        if (isArchive || isTrash || isJunk) {
+          await api('/move', { method: 'POST', body: { uid: state.selected.uid, from: state.currentFolder, to: 'INBOX' } });
+          toast('success', 'Restored to Inbox');
+        } else {
+          await api('/move', { method: 'POST', body: { uid: state.selected.uid, from: state.currentFolder, to: 'Archive' } });
+          toast('success', 'Archived');
+        }
+        closeEmail();
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Toolbar Adaptation ---
+    function updateToolbarForFolder() {
+      const isArchive = state.currentFolder === 'Archive';
+      const isTrash = state.currentFolder === 'Trash';
+      const isJunk = state.currentFolder === 'Junk';
+      const archiveBtn = document.getElementById('archiveBtn');
+      const deleteBtn = document.getElementById('deleteEmailBtn');
+
+      // Archive button becomes Restore in Trash/Junk/Archive
+      if (isArchive) {
+        archiveBtn.title = 'Unarchive';
+        archiveBtn.innerHTML = '<i class="fa-solid fa-box-open"></i>';
+      } else if (isTrash || isJunk) {
+        archiveBtn.title = 'Restore to Inbox';
+        archiveBtn.innerHTML = '<i class="fa-solid fa-arrow-rotate-left"></i>';
+      } else {
+        archiveBtn.title = 'Archive';
+        archiveBtn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      }
+
+      // Delete button becomes Permanent Delete in Trash
+      if (isTrash) {
+        deleteBtn.title = 'Delete Permanently';
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+      } else {
+        deleteBtn.title = 'Delete';
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      }
+
+      // Multi-select bar adaptation
+      const msArchive = document.getElementById('msArchive');
+      const msJunk = document.getElementById('msJunk');
+      const msRestore = document.getElementById('msRestore');
+      const msDelete = document.getElementById('msDelete');
+
+      msArchive.style.display = isTrash || isArchive || isJunk ? 'none' : '';
+      msJunk.style.display = isTrash || isArchive || isJunk ? 'none' : '';
+      if (msRestore) msRestore.style.display = isTrash || isArchive || isJunk ? '' : 'none';
+
+      if (isTrash) {
+        msDelete.title = 'Delete Permanently';
+        msDelete.querySelector('i').className = 'fa-solid fa-trash-can';
+      } else {
+        msDelete.title = 'Delete';
+        msDelete.querySelector('i').className = 'fa-solid fa-trash';
+      }
+    }
+
+    // --- Progress Bar Helper ---
+    function showProgressBar(container, inline = false) {
+      const bar = document.createElement('div');
+      bar.className = 'progress-bar-container' + (inline ? ' inline' : '');
+      bar.innerHTML = '<div class="progress-bar-fill"></div>';
+      container.prepend(bar);
+      return bar;
+    }
+
+    // --- AI Features ---
+    async function suggestReply() {
+      if (!state.selected) return;
+      const container = document.getElementById('replySuggestions');
+      container.classList.remove('hidden');
+      container.innerHTML = '';
+      const bar = showProgressBar(container, true);
+
+      try {
+        const data = await api('/ai', { method: 'POST', body: { action: 'reply_suggest', emailUid: state.selected.uid, emailFolder: state.currentFolder } });
+        bar.remove();
+        const suggestions = data.result || [];
+        if (!suggestions.length) {
+          container.innerHTML = '<span style="color:var(--fg-tertiary);font-size:0.82rem;">No suggestions available</span>';
+          return;
+        }
+        container.innerHTML = suggestions.map(s => `<div class="reply-chip">${esc(s)}</div>`).join('');
+        container.querySelectorAll('.reply-chip').forEach(el => {
+          el.addEventListener('click', () => {
+            openCompose({
+              to: state.selected.from?.address || '',
+              subject: `Re: ${state.selected.subject}`,
+              body: el.textContent + '\n\n---\nOn ' + new Date(state.selected.date).toLocaleString() + ', ' + (state.selected.from?.address || '') + ' wrote:\n' + (state.selected.body || '').substring(0, 500),
+              inReplyTo: state.selected.messageId,
+            });
+          });
+        });
+      } catch (err) {
+        bar.remove();
+        container.innerHTML = `<span style="color:var(--danger);font-size:0.82rem;">${err.message}</span>`;
+      }
+    }
+
+    async function aiAssistCompose() {
+      const prompt = document.getElementById('aiAssistPrompt').value.trim();
+      if (!prompt) return toast('warning', 'Describe what you want to write');
+
+      const footer = document.querySelector('#composeModal .modal-footer');
+      const bar = showProgressBar(footer, true);
+      try {
+        const data = await api('/ai', { method: 'POST', body: { action: 'compose_assist', prompt } });
+        bar.remove();
+        if (data.result) {
+          document.getElementById('composeBody').value = data.result + (state.settings.signature ? '\n\n' + state.settings.signature : '');
+          toast('success', 'AI draft generated');
+        }
+      } catch (err) {
+        bar.remove();
+        toast('error', err.message);
+      }
+    }
+
+    // --- AI: Grammar Check ---
+    async function grammarCheck() {
+      const body = document.getElementById('composeBody');
+      const text = body.value.trim();
+      if (!text) return toast('warning', 'Write something first');
+
+      const footer = document.querySelector('#composeModal .modal-footer');
+      const bar = showProgressBar(footer, true);
+      try {
+        const data = await api('/ai', { method: 'POST', body: { action: 'grammar_check', body: text } });
+        bar.remove();
+        if (data.result) {
+          body.value = data.result;
+          toast('success', 'Grammar corrected');
+        }
+      } catch (err) { bar.remove(); toast('error', err.message); }
+    }
+
+    // --- AI: Generate Subject ---
+    async function generateSubject() {
+      const body = document.getElementById('composeBody').value.trim();
+      if (!body) return toast('warning', 'Write a message first');
+
+      const footer = document.querySelector('#composeModal .modal-footer');
+      const bar = showProgressBar(footer, true);
+      try {
+        const data = await api('/ai', { method: 'POST', body: { action: 'generate_subject', body } });
+        bar.remove();
+        if (data.result) {
+          document.getElementById('composeSubject').value = data.result;
+          toast('success', 'Subject generated');
+        }
+      } catch (err) { bar.remove(); toast('error', err.message); }
+    }
+
+    // --- AI: Spam Filter ---
+    async function runSpamFilter() {
+      toast('info', 'Scanning for spam...');
+      try {
+        const data = await api('/spam-filter', { method: 'POST' });
+        if (data.filtered > 0) {
+          toast('success', data.filtered + ' spam email(s) moved to Junk');
+          loadEmails();
+        } else {
+          toast('success', 'No spam detected');
+        }
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Compose ---
+    let composeState = {};
+    let autosaveTimer = null;
+
+    function _getComposeData() {
+      return {
+        to: document.getElementById('composeTo').value.trim(),
+        cc: document.getElementById('composeCc').value.trim(),
+        subject: document.getElementById('composeSubject').value.trim(),
+        body: document.getElementById('composeBody').value,
+      };
+    }
+
+    function _hasComposeContent() {
+      const d = _getComposeData();
+      return d.to || d.subject || (d.body && d.body !== '\n\n' + (state.settings.signature || ''));
+    }
+
+    async function _autosaveDraft() {
+      if (!_hasComposeContent()) return;
+      const d = _getComposeData();
+      try {
+        const res = await api('/draft', { method: 'POST', body: { ...d, draftId: composeState.draftId } });
+        if (res.draftId) composeState.draftId = res.draftId;
+        // Show subtle saved indicator
+        const indicator = document.getElementById('autosaveIndicator');
+        if (indicator) { indicator.textContent = 'Saved'; indicator.style.opacity = '1'; setTimeout(() => indicator.style.opacity = '0', 2000); }
+      } catch { /* silent */ }
+    }
+
+    function _scheduleAutosave() {
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(_autosaveDraft, 3000);
+    }
+
+    function openCompose(prefill = {}) {
+      composeState = prefill;
+      document.getElementById('composeTo').value = prefill.to || '';
+      document.getElementById('composeCc').value = prefill.cc || '';
+      document.getElementById('composeSubject').value = prefill.subject || '';
+      document.getElementById('composeBody').value = prefill.body || (state.settings.signature ? '\n\n' + state.settings.signature : '');
+      document.getElementById('composeTitle').textContent = prefill.subject?.startsWith('Re:') ? 'Reply' : prefill.subject?.startsWith('Fwd:') ? 'Forward' : 'New Message';
+      document.getElementById('composeModal').classList.add('open');
+
+      // Autosave listeners
+      ['composeTo', 'composeCc', 'composeSubject', 'composeBody'].forEach(id => {
+        document.getElementById(id).addEventListener('input', _scheduleAutosave);
+      });
+
+      // Show AI assist if enabled
+      const aiRow = document.getElementById('aiAssistRow');
+      const gcBtn = document.getElementById('grammarCheckBtn');
+      const gsBtn = document.getElementById('genSubjectBtn');
+      if (state.settings.aiEnabled) {
+        aiRow.classList.remove('hidden');
+        gcBtn.style.display = '';
+        gsBtn.style.display = '';
+      } else {
+        aiRow.classList.add('hidden');
+        gcBtn.style.display = 'none';
+        gsBtn.style.display = 'none';
+      }
+    }
+
+    function closeCompose() {
+      // Auto-save on close if content exists
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      if (_hasComposeContent()) _autosaveDraft();
+      // Remove autosave listeners
+      ['composeTo', 'composeCc', 'composeSubject', 'composeBody'].forEach(id => {
+        document.getElementById(id).removeEventListener('input', _scheduleAutosave);
+      });
+      document.getElementById('composeModal').classList.remove('open');
+      composeState = {};
+    }
+
+    async function _doSend() {
+      const to = document.getElementById('composeTo').value.trim().replace(/[,;]\s*$/, '');
+      const cc = document.getElementById('composeCc').value.trim().replace(/[,;]\s*$/, '');
+      const subject = document.getElementById('composeSubject').value.trim();
+      const text = document.getElementById('composeBody').value;
+
+      if (!to) return toast('warning', 'Recipient is required');
+      if (!validateEmailAddresses(to)) return toast('error', 'Invalid email address in "To" field');
+      if (cc && !validateEmailAddresses(cc)) return toast('error', 'Invalid email address in "CC" field');
+
+      // Disable send button to prevent double-clicks
+      const sendBtn = document.getElementById('sendEmailBtn');
+      if (sendBtn.disabled) return;
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+
+      try {
+        const sendBody = {
+          to, cc, subject, text,
+          inReplyTo: composeState.inReplyTo || '',
+          references: composeState.references || '',
+        };
+        if (selectedSendAs) sendBody.from = `${selectedSendAs.local_part}@umbrasec.one`;
+        await api('/send', { method: 'POST', body: sendBody });
+        // Delete draft if it was saved
+        if (composeState.draftId) {
+          api('/draft/' + composeState.draftId, { method: 'DELETE' }).catch(() => {});
+        }
+        toast('success', 'Email sent');
+        closeCompose();
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) {
+        toast('error', err.message);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send';
+      }
+    }
+
+    async function sendEmail() {
+      const bodyEl = document.getElementById('composeBody');
+      const text = bodyEl.value.trim();
+      if (!document.getElementById('composeTo').value.trim()) return toast('warning', 'Recipient is required');
+
+      // Auto grammar check before send — only if the auto grammar toggle is on
+      if (state.settings.aiEnabled && state.settings.autoGrammar && text.length > 10) {
+        try {
+          toast('info', 'Checking grammar...');
+          const data = await api('/ai', { method: 'POST', body: { action: 'grammar_check', body: text } });
+          if (data.result && data.result !== text) {
+            const confirmed = await _showGrammarDialog(text, data.result);
+            if (confirmed === 'apply') bodyEl.value = data.result;
+            else if (confirmed === '_dismiss') return;
+            // 'skip' falls through to send with original text
+          }
+        } catch { /* grammar check failed — send anyway */ }
+      }
+
+      return _doSend();
+    }
+
+    function _showGrammarDialog(original, corrected) {
+      return _createDialog(
+        'Grammar Improvements',
+        `<p style="color:var(--fg-secondary);font-size:0.85rem;margin-bottom:12px;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent);margin-right:6px;"></i>AI found improvements for your message:</p>
+         <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.85rem;line-height:1.6;white-space:pre-wrap;color:var(--fg);max-height:40vh;overflow:auto;">${esc(corrected)}</div>`,
+        [
+          { action: '_dismiss', label: 'Cancel', class: 'btn-secondary' },
+          { action: 'skip', label: 'Send Original', class: 'btn-secondary' },
+          { action: 'apply', label: 'Apply & Send', class: 'btn-primary', icon: 'fa-check' },
+        ]
+      );
+    }
+
+    async function saveDraft() {
+      const to = document.getElementById('composeTo').value.trim();
+      const subject = document.getElementById('composeSubject').value.trim();
+      const body = document.getElementById('composeBody').value;
+      const cc = document.getElementById('composeCc').value.trim();
+
+      try {
+        await api('/draft', { method: 'POST', body: { to, cc, subject, body, draftId: composeState.draftId } });
+        toast('success', 'Draft saved');
+        closeCompose();
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Settings ---
+    async function loadSettings() {
+      try {
+        const data = await api('/settings');
+        state.settings = {
+          theme: data.theme || 'dark',
+          aiEnabled: data.aiEnabled || false,
+          aiProvider: data.aiProvider || '',
+          aiModel: data.aiModel || '',
+          autoGrammar: data.autoGrammar || false,
+          signature: data.signature || '',
+          emailsPerPage: data.emailsPerPage || 25,
+          timezone: data.timezone || '',
+          apiKeys: data.apiKeys || {},
+          providers: data.providers || [],
+          email: data.email || '',
+          accountId: data.accountId || '',
+        };
+
+        // Apply theme
+        const savedTheme = localStorage.getItem('umbra-mail-theme') || data.theme || 'dark';
+        applyTheme(savedTheme);
+
+        // Set user email
+        document.getElementById('userEmail').textContent = data.email || '';
+
+        // Update setup info username
+        const setupEl = document.getElementById('setupUsername');
+        if (setupEl) setupEl.textContent = data.email || 'your@email.com';
+
+        // Show/hide spam filter button
+        // Spam filter button removed — now runs automatically on INBOX load
+
+        return data;
+      } catch (err) {
+        toast('error', 'Failed to load settings');
+        throw err;
+      }
+    }
+
+    function openSettings() {
+      const s = state.settings;
+      document.getElementById('settingTheme').checked = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.getElementById('settingAiEnabled').checked = s.aiEnabled;
+      document.getElementById('settingAutoGrammar').checked = s.autoGrammar || false;
+      document.getElementById('settingAiProvider').value = s.aiProvider || '';
+      document.getElementById('settingSignature').value = s.signature || '';
+      document.getElementById('settingPerPage').value = String(s.emailsPerPage || 25);
+
+      // Populate timezone dropdown
+      const tzSelect = document.getElementById('settingTimezone');
+      if (tzSelect.options.length <= 1) {
+        const timezones = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : [
+          'America/New_York','America/Chicago','America/Denver','America/Los_Angeles',
+          'America/Anchorage','Pacific/Honolulu','Europe/London','Europe/Paris',
+          'Europe/Berlin','Asia/Tokyo','Asia/Shanghai','Asia/Kolkata',
+          'Australia/Sydney','Pacific/Auckland','UTC'
+        ];
+        for (const tz of timezones) {
+          const opt = document.createElement('option');
+          opt.value = tz;
+          opt.textContent = tz.replace(/_/g, ' ');
+          tzSelect.appendChild(opt);
+        }
+      }
+      tzSelect.value = s.timezone || '';
+
+      updateModelSelect(s.aiProvider);
+      if (s.aiModel) document.getElementById('settingAiModel').value = s.aiModel;
+
+      renderApiKeys();
+      updateAiSettingsVisibility();
+      document.getElementById('settingsModal').classList.add('open');
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('open');
+    }
+
+    function updateAiSettingsVisibility() {
+      const enabled = document.getElementById('settingAiEnabled').checked;
+      document.getElementById('aiSettingsBlock').style.display = enabled ? 'block' : 'none';
+    }
+
+    function updateModelSelect(provider) {
+      const select = document.getElementById('settingAiModel');
+      select.innerHTML = '<option value="">Default</option>';
+      const prov = state.settings.providers.find(p => p.id === provider);
+      if (prov && prov.models.length) {
+        prov.models.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m; opt.textContent = m;
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    function renderApiKeys() {
+      const container = document.getElementById('apiKeysContainer');
+      const providers = ['gemini', 'claude', 'deepseek', 'openrouter'];
+      const labels = { gemini: 'Gemini', claude: 'Claude', deepseek: 'DeepSeek', openrouter: 'OpenRouter' };
+
+      container.innerHTML = providers.map(p => {
+        const keyInfo = state.settings.apiKeys[p];
+        const hasKey = !!keyInfo;
+        return `<div class="api-key-row">
+          <span style="font-size:0.82rem;width:80px;color:var(--fg-secondary);">${labels[p]}</span>
+          <input id="apiKey_${p}" type="password" placeholder="${hasKey ? keyInfo.maskedKey : 'Enter API key...'}"
+            style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--input-bg);color:var(--fg);font-size:0.82rem;outline:none;">
+          <button class="btn btn-sm btn-secondary" data-save-key="${p}">Save</button>
+          ${hasKey ? `<button class="btn btn-sm btn-danger" data-delete-key="${p}"><i class="fa-solid fa-xmark"></i></button>` : ''}
+          <span class="api-key-status ${hasKey ? '' : 'none'}">${hasKey ? 'Active' : ''}</span>
+        </div>`;
+      }).join('');
+
+      container.querySelectorAll('[data-save-key]').forEach(btn => {
+        btn.addEventListener('click', () => saveApiKey(btn.dataset.saveKey));
+      });
+      container.querySelectorAll('[data-delete-key]').forEach(btn => {
+        btn.addEventListener('click', () => deleteApiKey(btn.dataset.deleteKey));
+      });
+    }
+
+    async function saveApiKey(provider) {
+      const input = document.getElementById(`apiKey_${provider}`);
+      const key = input.value.trim();
+      if (!key || key === state.settings.apiKeys[provider]?.maskedKey) return toast('warning', 'Enter a new API key');
+
+      try {
+        await api('/api-key', { method: 'POST', body: { provider, apiKey: key } });
+        toast('success', `${provider} API key saved`);
+        await loadSettings();
+        renderApiKeys();
+        // Reload emails to pick up AI enrichment with the new key
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function deleteApiKey(provider) {
+      try {
+        await api(`/api-key/${provider}`, { method: 'DELETE' });
+        toast('success', `${provider} API key removed`);
+        await loadSettings();
+        renderApiKeys();
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function saveSettings() {
+      const theme = document.getElementById('settingTheme').checked ? 'dark' : 'light';
+      const aiEnabled = document.getElementById('settingAiEnabled').checked;
+      const aiProvider = document.getElementById('settingAiProvider').value || null;
+      const aiModel = document.getElementById('settingAiModel').value || null;
+      const autoGrammar = document.getElementById('settingAutoGrammar').checked;
+      const signature = document.getElementById('settingSignature').value;
+      const emailsPerPage = parseInt(document.getElementById('settingPerPage').value) || 25;
+      const timezone = document.getElementById('settingTimezone').value || '';
+
+      try {
+        const prevAi = state.settings.aiEnabled;
+        const prevProvider = state.settings.aiProvider;
+        const prevModel = state.settings.aiModel;
+        const prevPerPage = state.settings.emailsPerPage;
+
+        await api('/settings', { method: 'POST', body: { theme, aiEnabled, aiProvider, aiModel, autoGrammar, signature, emailsPerPage, timezone } });
+        applyTheme(theme);
+        state.settings = { ...state.settings, theme, aiEnabled, aiProvider, aiModel, autoGrammar, signature, emailsPerPage, timezone };
+        toast('success', 'Settings saved');
+        closeSettings();
+
+        // Always reload emails to reflect changes (AI enrichment, per-page count, etc.)
+        emailCache.invalidateAll();
+        await loadEmails(true);
+
+        // If AI was just toggled or provider changed, and an email is open, re-select it
+        const aiChanged = prevAi !== aiEnabled || prevProvider !== aiProvider || prevModel !== aiModel;
+        if (aiChanged && state.selected) {
+          selectEmail(state.selected.uid);
+        }
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Email Validation ---
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    }
+
+    function validateEmailAddresses(field) {
+      const value = field.trim().replace(/[,;]\s*$/, ''); // strip trailing comma/semicolon
+      if (!value) return true; // empty is OK for CC/BCC
+      const addresses = value.split(/[,;]\s*/).filter(a => a.length > 0);
+      for (const addr of addresses) {
+        if (!isValidEmail(addr)) return false;
+      }
+      return true;
+    }
+
+    // --- Contact Autocomplete ---
+    let activeAutocomplete = null;
+
+    function setupAutocomplete(inputId, listId) {
+      const input = document.getElementById(inputId);
+      const list = document.getElementById(listId);
+      let debounceTimer = null;
+      let selectedIdx = -1;
+
+      input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        const val = input.value.trim();
+        // Get the last email being typed (after the last comma)
+        const parts = val.split(/[,;]\s*/);
+        const query = parts[parts.length - 1].trim();
+
+        if (query.length < 2) { list.classList.remove('visible'); return; }
+
+        debounceTimer = setTimeout(async () => {
+          try {
+            const data = await api(`/contacts?q=${encodeURIComponent(query)}`);
+            const contacts = data.contacts || [];
+            if (!contacts.length) { list.classList.remove('visible'); return; }
+            selectedIdx = -1;
+            list.innerHTML = contacts.map((c, i) => {
+              const display = c.name
+                ? `<span class="contact-name">${esc(c.name)}</span><span class="contact-email">${esc(c.address)}</span>`
+                : `<span class="contact-name">${esc(c.address)}</span>`;
+              return `<div class="autocomplete-item" data-idx="${i}" data-address="${esc(c.address)}">${display}</div>`;
+            }).join('');
+            list.classList.add('visible');
+            activeAutocomplete = { input, list, listId };
+
+            list.querySelectorAll('.autocomplete-item').forEach(item => {
+              item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                selectContact(input, list, item.dataset.address);
+              });
+            });
+          } catch { list.classList.remove('visible'); }
+        }, 300);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (!list.classList.contains('visible')) return;
+        const items = list.querySelectorAll('.autocomplete-item');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
+          items.forEach((it, i) => it.classList.toggle('active', i === selectedIdx));
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedIdx = Math.max(selectedIdx - 1, 0);
+          items.forEach((it, i) => it.classList.toggle('active', i === selectedIdx));
+        } else if (e.key === 'Enter' && selectedIdx >= 0) {
+          e.preventDefault();
+          selectContact(input, list, items[selectedIdx].dataset.address);
+        } else if (e.key === 'Escape') {
+          list.classList.remove('visible');
+        }
+      });
+
+      input.addEventListener('blur', () => {
+        setTimeout(() => list.classList.remove('visible'), 200);
+      });
+    }
+
+    function selectContact(input, list, address) {
+      const isCcField = input.id === 'composeCc';
+      const parts = input.value.split(/[,;]\s*/);
+      parts[parts.length - 1] = address;
+      // Only add trailing comma for CC field to allow adding more recipients
+      input.value = isCcField ? parts.join(', ') + ', ' : parts.join(', ');
+      list.classList.remove('visible');
+      input.focus();
+    }
+
+    // --- Empty Trash ---
+    async function emptyTrash() {
+      if (!await confirmDialog('Permanently delete all emails in Trash? This cannot be undone.', { title: 'Empty Trash', confirmLabel: 'Empty Trash', danger: true, icon: 'fa-trash-can' })) return;
+      try {
+        const data = await api('/empty-trash', { method: 'POST' });
+        toast('success', `Trash emptied (${data.deleted || 0} emails deleted)`);
+        emailCache.invalidateAll();
+        loadEmails(true);
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Browser Email Cache ---
+    const emailCache = {
+      _key(folder) { return `umbra-cache-${folder}`; },
+      get(folder) {
+        try {
+          const raw = sessionStorage.getItem(this._key(folder));
+          if (!raw) return null;
+          const cached = JSON.parse(raw);
+          // Cache valid for 2 minutes
+          if (Date.now() - cached.ts > 120000) { sessionStorage.removeItem(this._key(folder)); return null; }
+          return cached.emails;
+        } catch { return null; }
+      },
+      set(folder, emails) {
+        try { sessionStorage.setItem(this._key(folder), JSON.stringify({ ts: Date.now(), emails })); } catch { /* quota */ }
+      },
+      invalidate(folder) { sessionStorage.removeItem(this._key(folder)); },
+      invalidateAll() {
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+          const key = sessionStorage.key(i);
+          if (key?.startsWith('umbra-cache-')) sessionStorage.removeItem(key);
+        }
+      },
+    };
+
+    // --- Contacts Panel ---
+    let allContacts = [];
+
+    async function loadContacts(query = '') {
+      try {
+        const data = await api(`/contacts?q=${encodeURIComponent(query)}`);
+        allContacts = data.contacts || [];
+        renderContacts(allContacts);
+      } catch (err) { toast('error', 'Failed to load contacts'); }
+    }
+
+    function renderContacts(contacts) {
+      const list = document.getElementById('contactsList');
+      if (!contacts.length) {
+        list.innerHTML = '<div class="contacts-empty"><i class="fa-solid fa-address-book" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:8px;"></i>No contacts found</div>';
+        return;
+      }
+      list.innerHTML = contacts.map(c => {
+        const initials = (c.name || c.address)[0].toUpperCase();
+        return `<div class="contact-row" data-email="${esc(c.address)}">
+          <div class="contact-avatar">${initials}</div>
+          <div class="contact-info">
+            <div class="contact-info-name">${esc(c.name || c.address)}</div>
+            <div class="contact-info-email">${c.name ? esc(c.address) : ''}</div>
+          </div>
+          <div class="contact-actions">
+            <button title="Compose" data-contact-compose="${esc(c.address)}"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button title="Edit" data-contact-edit="${esc(c.address)}" data-contact-name="${esc(c.name || '')}"><i class="fa-solid fa-pencil"></i></button>
+            <button title="Delete" class="danger" data-contact-delete="${esc(c.address)}"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+
+      list.querySelectorAll('[data-contact-compose]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeContacts();
+          openCompose({ to: btn.dataset.contactCompose });
+        });
+      });
+      list.querySelectorAll('[data-contact-edit]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const email = btn.dataset.contactEdit;
+          const name = btn.dataset.contactName;
+          const newName = await promptDialog('Contact name:', { title: 'Edit Contact', defaultValue: name, placeholder: 'Name' });
+          if (newName === null) return;
+          const newEmail = await promptDialog('Contact email:', { title: 'Edit Contact', defaultValue: email, placeholder: 'email@example.com' });
+          if (newEmail === null) return;
+          editContact(email, newEmail, newName);
+        });
+      });
+      list.querySelectorAll('[data-contact-delete]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (await confirmDialog(`Remove ${btn.dataset.contactDelete} from contacts?`, { title: 'Remove Contact', confirmLabel: 'Remove', danger: true, icon: 'fa-user-minus' })) {
+            deleteContact(btn.dataset.contactDelete);
+          }
+        });
+      });
+      list.querySelectorAll('.contact-row').forEach(row => {
+        row.addEventListener('click', () => {
+          closeContacts();
+          openCompose({ to: row.dataset.email });
+        });
+      });
+    }
+
+    async function addContact() {
+      const name = document.getElementById('contactAddName').value.trim();
+      const email = document.getElementById('contactAddEmail').value.trim();
+      if (!email || !isValidEmail(email)) return toast('warning', 'Enter a valid email address');
+      try {
+        await api('/contacts', { method: 'POST', body: { email, name } });
+        document.getElementById('contactAddName').value = '';
+        document.getElementById('contactAddEmail').value = '';
+        toast('success', 'Contact added');
+        loadContacts(document.getElementById('contactsSearchInput').value.trim());
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function editContact(originalEmail, newEmail, newName) {
+      try {
+        await api('/contacts', { method: 'PUT', body: { email: newEmail, name: newName, originalEmail } });
+        toast('success', 'Contact updated');
+        loadContacts(document.getElementById('contactsSearchInput').value.trim());
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function deleteContact(email) {
+      try {
+        await api(`/contacts/${encodeURIComponent(email)}`, { method: 'DELETE' });
+        toast('success', 'Contact removed');
+        loadContacts(document.getElementById('contactsSearchInput').value.trim());
+      } catch (err) { toast('error', err.message); }
+    }
+
+    function openContacts() {
+      document.getElementById('contactsPanel').classList.add('open');
+      loadContacts();
+    }
+
+    function closeContacts() {
+      document.getElementById('contactsPanel').classList.remove('open');
+    }
+
+    // --- Account Selector & Burner Aliases ---
+    const MAX_ACTIVE_BURNERS = 3;
+    let aliasesCache = [];
+    let accountDropdownOpen = false;
+    let selectedSendAs = null; // null = primary, or alias object
+
+    async function loadAliases() {
+      try {
+        const data = await api('/aliases');
+        aliasesCache = data.aliases || [];
+        renderAccountDropdown();
+      } catch (err) { /* silently fail on initial load */ }
+    }
+
+    function toggleAccountDropdown() {
+      accountDropdownOpen = !accountDropdownOpen;
+      document.getElementById('accountDropdown').classList.toggle('open', accountDropdownOpen);
+      document.getElementById('accountChevron').classList.toggle('open', accountDropdownOpen);
+      if (accountDropdownOpen) loadAliases();
+    }
+
+    function closeAccountDropdown() {
+      accountDropdownOpen = false;
+      document.getElementById('accountDropdown').classList.remove('open');
+      document.getElementById('accountChevron').classList.remove('open');
+    }
+
+    function updateAccountHeader() {
+      const email = selectedSendAs ? `${selectedSendAs.local_part}@umbrasec.one` : (state.settings.email || document.getElementById('userEmail')?.textContent || '');
+      const label = selectedSendAs ? (selectedSendAs.label || 'Burner alias') : 'Primary account';
+      const initial = email ? email.charAt(0).toUpperCase() : '?';
+      document.getElementById('userEmail').textContent = email;
+      document.getElementById('accountLabel').textContent = label;
+      document.getElementById('accountAvatar').textContent = initial;
+    }
+
+    function renderAccountDropdown() {
+      const container = document.getElementById('accountDropdownList');
+      const primaryEmail = state.settings.email || '';
+      const activeAliases = aliasesCache.filter(a => a.is_active);
+      const inactiveAliases = aliasesCache.filter(a => !a.is_active);
+      const totalCount = aliasesCache.length;
+
+      let html = '';
+
+      // Primary account
+      const isPrimary = !selectedSendAs;
+      html += `<div class="account-dropdown-item ${isPrimary ? 'active' : ''}" onclick="selectAccount(null)" role="button" tabindex="0">
+        <div class="acct-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="acct-info">
+          <div class="acct-email">${esc(primaryEmail)}</div>
+          <div class="acct-meta">Primary account</div>
+        </div>
+        ${isPrimary ? '<i class="fa-solid fa-check" style="color:var(--accent);font-size:0.75rem;"></i>' : ''}
+      </div>`;
+
+      // Active burner aliases
+      if (activeAliases.length > 0) {
+        html += '<div class="account-dropdown-divider"></div>';
+        html += `<div class="account-dropdown-label">Burner aliases (${totalCount}/${MAX_ACTIVE_BURNERS})</div>`;
+        for (const a of activeAliases) {
+          const addr = `${esc(a.local_part)}@umbrasec.one`;
+          const label = a.label ? esc(a.label) : 'No label';
+          const isSelected = selectedSendAs && selectedSendAs.alias_id === a.alias_id;
+          html += `<div class="account-dropdown-item ${isSelected ? 'active' : ''}" onclick="selectAccount('${esc(a.alias_id)}')" role="button" tabindex="0">
+            <div class="acct-avatar"><i class="fa-solid fa-masks-theater"></i></div>
+            <div class="acct-info">
+              <div class="acct-email">${addr}</div>
+              <div class="acct-meta">${label} &middot; ${a.forwarded_count || 0} fwd</div>
+            </div>
+            <div class="acct-actions">
+              <button title="Copy" onclick="event.stopPropagation();copyAlias('${addr}')"><i class="fa-solid fa-copy"></i></button>
+              <button title="Edit label" onclick="event.stopPropagation();editAliasLabel('${esc(a.alias_id)}','${esc(a.label||'')}')"><i class="fa-solid fa-pen"></i></button>
+              <button title="Deactivate" onclick="event.stopPropagation();toggleAlias('${esc(a.alias_id)}',false)"><i class="fa-solid fa-toggle-on" style="color:var(--success);"></i></button>
+              <button class="danger" title="Delete" onclick="event.stopPropagation();deleteAlias('${esc(a.alias_id)}')"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+        }
+      }
+
+      // Inactive aliases
+      if (inactiveAliases.length > 0) {
+        html += '<div class="account-dropdown-divider"></div>';
+        html += '<div class="account-dropdown-label">Inactive</div>';
+        for (const a of inactiveAliases) {
+          const addr = `${esc(a.local_part)}@umbrasec.one`;
+          html += `<div class="account-dropdown-item" style="opacity:0.6;" role="button" tabindex="0">
+            <div class="acct-avatar"><i class="fa-solid fa-masks-theater"></i></div>
+            <div class="acct-info">
+              <div class="acct-email" style="text-decoration:line-through;">${addr}</div>
+              <div class="acct-meta">${a.label ? esc(a.label) : 'No label'}</div>
+            </div>
+            <div class="acct-actions">
+              <button title="Activate" onclick="event.stopPropagation();toggleAlias('${esc(a.alias_id)}',true)"><i class="fa-solid fa-toggle-off"></i></button>
+              <button class="danger" title="Delete" onclick="event.stopPropagation();deleteAlias('${esc(a.alias_id)}')"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+        }
+      }
+
+      container.innerHTML = html;
+
+      // Render sticky footer separately (outside scrollable area)
+      const footerContainer = document.getElementById('accountDropdownFooter');
+      if (totalCount >= MAX_ACTIVE_BURNERS) {
+        footerContainer.innerHTML = `<div style="padding:8px 16px;font-size:0.72rem;color:var(--fg-tertiary);border-top:1px solid var(--border);"><i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>Max ${MAX_ACTIVE_BURNERS} burners. Delete one first.</div>`;
+      } else {
+        footerContainer.innerHTML = `<div class="account-dropdown-footer">
+          <div class="burner-name-row">
+            <input id="aliasNameInput" placeholder="name" maxlength="30" pattern="[a-z0-9._-]+">
+            <span class="suffix-preview" id="suffixPreview">xxxx@umbrasec.one</span>
+          </div>
+          <div class="burner-action-row">
+            <input id="aliasLabelInput" placeholder="Label (optional)">
+            <button class="burner-create-btn" id="createBurnerBtn"><i class="fa-solid fa-plus"></i> Create</button>
+          </div>
+        </div>`;
+        const nameInput = document.getElementById('aliasNameInput');
+        const suffixPreview = document.getElementById('suffixPreview');
+        nameInput.addEventListener('input', (e) => {
+          e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+          suffixPreview.textContent = (e.target.value || 'name') + 'xxxx@umbrasec.one';
+        });
+        nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.stopPropagation(); createAlias(); } });
+        document.getElementById('aliasLabelInput').addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') { e.stopPropagation(); createAlias(); }
+        });
+        document.getElementById('createBurnerBtn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          createAlias();
+        });
+      }
+    }
+
+    async function selectAccount(aliasId) {
+      closeAccountDropdown();
+      if (aliasId === null) {
+        // Switch back to primary account
+        if (selectedSendAs && selectedSendAs.burner_mail_account_id) {
+          try {
+            await api('/select-account', { method: 'POST', body: { id: state.settings.accountId } });
+          } catch (err) { toast('error', 'Failed to switch account'); return; }
+        }
+        selectedSendAs = null;
+      } else {
+        const alias = aliasesCache.find(a => a.alias_id === aliasId) || null;
+        if (!alias) return;
+        // If burner has its own inbox, switch the backend viewing context
+        if (alias.burner_mail_account_id) {
+          try {
+            await api('/select-account', { method: 'POST', body: { id: alias.burner_mail_account_id } });
+          } catch (err) { toast('error', 'Failed to switch account'); return; }
+        }
+        selectedSendAs = alias;
+      }
+      updateAccountHeader();
+      renderAccountDropdown();
+      // Refresh mail view for the new account
+      emailCache.invalidateAll();
+      state.currentFolder = 'INBOX';
+      document.getElementById('listTitle').textContent = 'Inbox';
+      renderFolders();
+      await loadEmails(true);
+    }
+
+    async function createAlias() {
+      const nameInput = document.getElementById('aliasNameInput');
+      const labelInput = document.getElementById('aliasLabelInput');
+      const btn = document.getElementById('createBurnerBtn');
+      const name = nameInput ? nameInput.value.trim() : '';
+      const label = labelInput ? labelInput.value.trim() : '';
+      if (!name) { toast('error', 'Enter a name for the burner address'); nameInput?.focus(); return; }
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+      try {
+        const data = await api('/aliases', { method: 'POST', body: { name, label: label || undefined } });
+        toast('success', `Burner created: ${data.alias}`);
+        if (nameInput) nameInput.value = '';
+        if (labelInput) labelInput.value = '';
+        await loadAliases();
+      } catch (err) {
+        toast('error', err.message);
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Create'; }
+      }
+    }
+
+    async function toggleAlias(aliasId, activate) {
+      try {
+        await api(`/aliases/${aliasId}`, { method: 'PATCH', body: { is_active: activate } });
+        toast('success', activate ? 'Alias activated' : 'Alias deactivated');
+        // If we deactivated the currently selected alias, switch back to primary
+        if (!activate && selectedSendAs && selectedSendAs.alias_id === aliasId) {
+          selectedSendAs = null;
+          updateAccountHeader();
+        }
+        await loadAliases();
+      } catch (err) { toast('error', err.message); }
+    }
+
+    function copyAlias(addr) {
+      navigator.clipboard.writeText(addr).then(() => toast('success', 'Copied to clipboard'));
+    }
+
+    async function editAliasLabel(aliasId, currentLabel) {
+      closeAccountDropdown();
+      const newLabel = await promptDialog('Enter a label for this alias:', { title: 'Edit Alias Label', defaultValue: currentLabel, placeholder: 'e.g. Shopping, Newsletters' });
+      if (newLabel === null) return;
+      try {
+        await api(`/aliases/${aliasId}`, { method: 'PATCH', body: { label: newLabel } });
+        toast('success', 'Label updated');
+        await loadAliases();
+        if (selectedSendAs && selectedSendAs.alias_id === aliasId) {
+          selectedSendAs.label = newLabel;
+          updateAccountHeader();
+        }
+      } catch (err) { toast('error', err.message); }
+    }
+
+    async function deleteAlias(aliasId) {
+      closeAccountDropdown();
+      const ok = await confirmDialog('Permanently delete this burner alias? Emails sent to this address will no longer be forwarded.', { title: 'Delete Alias', confirmLabel: 'Delete', danger: true, icon: 'fa-trash' });
+      if (!ok) return;
+      try {
+        await api(`/aliases/${aliasId}`, { method: 'DELETE' });
+        toast('success', 'Alias deleted');
+        if (selectedSendAs && selectedSendAs.alias_id === aliasId) {
+          selectedSendAs = null;
+          updateAccountHeader();
+        }
+        await loadAliases();
+      } catch (err) { toast('error', err.message); }
+    }
+
+    // --- Close Email ---
+    function closeEmail() {
+      state.selected = null;
+      document.getElementById('readerContent').classList.add('hidden');
+      document.getElementById('readerEmpty').classList.remove('hidden');
+      document.getElementById('readerPane').classList.remove('visible');
+      renderEmailList();
+    }
+
+    // --- Init ---
+    async function init() {
+      // Event listeners
+      document.getElementById('composeBtn').onclick = () => openCompose();
+      document.getElementById('composeClose').onclick = closeCompose;
+      document.getElementById('sendEmailBtn').onclick = sendEmail;
+      document.getElementById('saveDraftBtn').onclick = saveDraft;
+      document.getElementById('settingsBtn').onclick = openSettings;
+      document.getElementById('settingsClose').onclick = closeSettings;
+      document.getElementById('settingsCancel').onclick = closeSettings;
+      document.getElementById('settingsSave').onclick = saveSettings;
+      document.getElementById('themeBtn').onclick = toggleTheme;
+      document.getElementById('refreshBtn').onclick = () => { emailCache.invalidate(state.currentFolder); loadEmails(true); };
+      document.getElementById('deleteEmailBtn').onclick = deleteEmail;
+      document.getElementById('archiveBtn').onclick = archiveEmail;
+      document.getElementById('logoutBtn').onclick = () => window.location.href = '/logout';
+      document.getElementById('contactsBtn').onclick = openContacts;
+      document.getElementById('contactsClose').onclick = closeContacts;
+      document.getElementById('accountSelectBtn').onclick = toggleAccountDropdown;
+      document.getElementById('contactAddBtn').onclick = addContact;
+      document.getElementById('contactsPanel').addEventListener('click', (e) => { if (e.target === document.getElementById('contactsPanel')) closeContacts(); });
+      document.getElementById('contactAddEmail').addEventListener('keydown', (e) => { if (e.key === 'Enter') addContact(); });
+      document.getElementById('contactsSearchInput').addEventListener('input', () => {
+        clearTimeout(state._contactSearchTimer);
+        state._contactSearchTimer = setTimeout(() => loadContacts(document.getElementById('contactsSearchInput').value.trim()), 300);
+      });
+      document.getElementById('closeEmailBtn').onclick = closeEmail;
+      document.getElementById('aiSuggestBtn').onclick = suggestReply;
+      // Safety check is now automatic on email open (via analyzeEmail)
+      document.getElementById('aiAssistBtn').onclick = aiAssistCompose;
+      document.getElementById('grammarCheckBtn').onclick = grammarCheck;
+      document.getElementById('genSubjectBtn').onclick = generateSubject;
+      document.getElementById('emptyTrashBtn').onclick = emptyTrash;
+      document.getElementById('composeFab').onclick = () => openCompose();
+
+      // Setup contact autocomplete on compose fields
+      setupAutocomplete('composeTo', 'toAutocomplete');
+      setupAutocomplete('composeCc', 'ccAutocomplete');
+
+      // Multi-select bar actions
+      document.getElementById('msRead').onclick = () => multiSelectAction('read');
+      document.getElementById('msUnread').onclick = () => multiSelectAction('unread');
+      document.getElementById('msStar').onclick = () => multiSelectAction('star');
+      document.getElementById('msArchive').onclick = () => multiSelectAction('archive');
+      document.getElementById('msJunk').onclick = () => multiSelectAction('junk');
+      document.getElementById('msRestore').onclick = () => multiSelectAction('restore');
+      document.getElementById('msDelete').onclick = () => multiSelectAction('delete');
+      document.getElementById('msClear').onclick = clearMultiSelect;
+
+      // Context menu
+      document.querySelectorAll('#contextMenu .context-menu-item').forEach(item => {
+        item.addEventListener('click', () => handleContextAction(item.dataset.action));
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.context-menu')) hideContextMenu();
+      });
+      document.addEventListener('contextmenu', (e) => {
+        if (!e.target.closest('.mail-item')) hideContextMenu();
+      });
+
+      // Mobile: sidebar toggle
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
+      function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
+      document.getElementById('menuBtn').onclick = openSidebar;
+      sidebarOverlay.onclick = closeSidebar;
+
+      // Mobile: reader back button
+      document.getElementById('readerBackBtn').onclick = () => {
+        document.getElementById('readerPane').classList.remove('visible');
+        state.selected = null;
+        renderEmailList();
+      };
+
+      // Mobile: bottom bar tabs
+      document.querySelectorAll('#mobileBottomBar [data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#mobileBottomBar [data-tab]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          switch (btn.dataset.tab) {
+            case 'inbox':
+              state.currentFolder = 'INBOX';
+              document.getElementById('listTitle').textContent = 'Inbox';
+              renderFolders(); loadEmails(); updateToolbarForFolder();
+              break;
+            case 'search':
+              document.getElementById('searchInput').focus();
+              break;
+            case 'contacts':
+              openContacts();
+              break;
+            case 'folders':
+              openSidebar();
+              break;
+            case 'settings':
+              openSettings();
+              break;
+          }
+        });
+      });
+
+      // Close sidebar when folder selected on mobile
+      const origFolderClick = () => { closeSidebar(); };
+
+      document.getElementById('replyBtn').onclick = () => {
+        if (!state.selected) return;
+        openCompose({
+          to: state.selected.from?.address || '',
+          subject: `Re: ${state.selected.subject}`,
+          body: '\n\n---\nOn ' + new Date(state.selected.date).toLocaleString() + ', ' + (state.selected.from?.address || '') + ' wrote:\n' + (state.selected.body || '').substring(0, 1000),
+          inReplyTo: state.selected.messageId,
+        });
+      };
+
+      document.getElementById('forwardBtn').onclick = () => {
+        if (!state.selected) return;
+        openCompose({
+          subject: `Fwd: ${state.selected.subject}`,
+          body: '\n\n--- Forwarded message ---\nFrom: ' + (state.selected.from?.address || '') + '\nDate: ' + new Date(state.selected.date).toLocaleString() + '\nSubject: ' + state.selected.subject + '\n\n' + (state.selected.body || ''),
+        });
+      };
+
+      document.getElementById('starEmailBtn').onclick = () => { if (state.selected) toggleStar(state.selected.uid); };
+
+      // Search
+      document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(state.searchTimeout);
+        state.searchTimeout = setTimeout(loadEmails, 400);
+      });
+
+      // AI settings toggle
+      document.getElementById('settingAiEnabled').addEventListener('change', updateAiSettingsVisibility);
+      document.getElementById('settingAiProvider').addEventListener('change', (e) => updateModelSelect(e.target.value));
+
+      // Close account dropdown on outside click
+      document.addEventListener('click', (e) => {
+        if (accountDropdownOpen && !e.target.closest('#sidebarHeader')) closeAccountDropdown();
+      });
+
+      // Close modals on overlay click
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) overlay.classList.remove('open');
+        });
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+          document.getElementById('readerPane').classList.remove('visible');
+        }
+        if (e.key === 'c') openCompose();
+        if (e.key === 'r' && state.selected) loadEmails();
+        if (e.key === 'Delete' && state.selected) deleteEmail();
+      });
+
+      // Load data
+      try {
+        const saved = localStorage.getItem('umbra-mail-theme');
+        if (saved) applyTheme(saved);
+
+        await loadSettings();
+        await loadFolders();
+        await loadEmails();
+        updateToolbarForFolder();
+        loadAliases(); // Load burner aliases for account dropdown
+
+        // Seed known UIDs for notification tracking
+        for (const e of state.emails) state.lastKnownUids.add(e.uid);
+
+        // Request notification permission
+        requestNotificationPermission();
+
+        // Poll for new mail every 60 seconds
+        setInterval(checkNewMail, 60000);
+
+        // Auto-refresh when app returns to foreground (mobile tab-switch / PWA resume)
+        let lastVisibleTime = Date.now();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            const elapsed = Date.now() - lastVisibleTime;
+            // If away for more than 30 seconds, refresh
+            if (elapsed > 30000) {
+              emailCache.invalidateAll();
+              loadEmails(true);
+              checkNewMail();
+            }
+          } else {
+            lastVisibleTime = Date.now();
+          }
+        });
+      } catch (err) {
+        if (err.message?.includes('Session expired') || err.message?.includes('Auth') || err.message?.includes('401')) {
+          window.location.href = '/login';
+        }
+      }
+    }
+
+    // --- PWA ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show install section in settings if available
+      const section = document.getElementById('pwaInstallSection');
+      if (section) section.classList.remove('hidden');
+    });
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#pwaInstallBtn')) {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(result => {
+            if (result.outcome === 'accepted') toast('success', 'App installed');
+            deferredPrompt = null;
+            document.getElementById('pwaInstallSection')?.classList.add('hidden');
+          });
+        } else {
+          toast('info', 'App already installed or not available on this device');
+        }
+      }
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    init();
+  </script>
+</body>
+</html>

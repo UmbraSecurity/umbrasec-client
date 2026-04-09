@@ -1,0 +1,317 @@
+/* Admin HQ Dashboard Layout */
+.container { 
+    max-width: 1400px; 
+    padding: 2rem 0; 
+}
+
+/* Dashboard Tabs */
+.admin-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--fg-muted);
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tab-btn i { font-size: 0.9rem; }
+
+.tab-btn:hover { 
+    background: rgba(255,255,255,0.05); 
+    color: #fff; 
+}
+
+.tab-btn.active { 
+    background: var(--quantum-1); 
+    color: #fff; 
+}
+
+.tab-content { 
+    display: none; 
+}
+
+.tab-content.active { 
+    display: block; 
+    animation: fadeIn 0.4s ease-out; 
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+.stat-card label { 
+    font-size: 0.7rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    color: var(--fg-muted); 
+    display: block; 
+    margin-bottom: 8px; 
+}
+
+.stat-card .value { 
+    font-size: 1.8rem; 
+    font-weight: 700; 
+    color: #fff; 
+}
+
+.stat-card .detail { 
+    font-size: 0.75rem; 
+    color: var(--fg-muted); 
+    margin-top: 4px; 
+}
+
+/* Health Grid */
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.health-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    padding: 1.2rem;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.health-status { 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+}
+
+.status-online { background: #10b981; box-shadow: 0 0 10px #10b981; }
+.status-offline { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+.status-error { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+
+/* Audit List */
+.audit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.audit-item {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.audit-time { 
+    color: var(--fg-muted); 
+    font-family: var(--font-mono); 
+    min-width: 160px; 
+}
+
+.audit-action { 
+    font-weight: 700; 
+    color: var(--quantum-3); 
+    min-width: 140px; 
+}
+
+.audit-details { 
+    flex: 1; 
+    color: #fff; 
+}
+
+.audit-admin { 
+    color: var(--quantum-1); 
+    font-weight: 600; 
+}
+
+/* General UI */
+.search-bar { 
+    margin-bottom: 1.5rem; 
+    display: flex; 
+    gap: 1rem; 
+}
+
+.search-input { 
+    flex: 1; 
+    background: rgba(255, 255, 255, 0.03); 
+    border: 1px solid var(--glass-border); 
+    border-radius: 12px; 
+    padding: 0.8rem 1.2rem; 
+    color: #fff; 
+    font-family: var(--font-sans); 
+}
+
+/* Modal Styles */
+.modal-overlay { 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0, 0, 0, 0.8); 
+    backdrop-filter: blur(8px); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 2000; 
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s; 
+}
+
+.modal-overlay.active { 
+    opacity: 1; 
+    pointer-events: auto; 
+}
+
+.modal-card { 
+    width: 100%; 
+    max-width: 500px; 
+    transform: translateY(20px); 
+    transition: transform 0.3s; 
+}
+
+.modal-overlay.active .modal-card { 
+    transform: translateY(0); 
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+}
+
+.close-modal { 
+    background: none; 
+    border: none; 
+    color: var(--fg-muted); 
+    cursor: pointer; 
+    font-size: 1.2rem; 
+}
+
+.close-modal:hover { color: #fff; }
+
+.manager-field { margin-bottom: 1.5rem; }
+.manager-field label { 
+    display: block; 
+    font-size: 0.8rem; 
+    text-transform: uppercase; 
+    color: var(--fg-muted); 
+    margin-bottom: 0.5rem; 
+}
+
+.manager-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.toast-container { 
+    position: fixed; 
+    bottom: 2rem; 
+    right: 2rem; 
+    z-index: 3000; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.5rem; 
+}
+
+.toast { 
+    background: var(--bg-base); 
+    border: 1px solid var(--glass-border); 
+    padding: 1rem 1.5rem; 
+    border-radius: 12px; 
+    color: #fff; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    animation: slideIn 0.3s ease-out; 
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+.btn-full { width: 100%; }
+.hidden { display: none !important; }
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .container { padding: 1rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .admin-tabs { 
+        flex-wrap: nowrap; 
+        overflow-x: auto; 
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tab-btn { 
+        white-space: nowrap; 
+        padding: 0.6rem 1rem; 
+        font-size: 0.85rem; 
+    }
+    
+    .stats-grid { grid-template-columns: 1fr; }
+    .health-grid { grid-template-columns: 1fr; }
+    
+    .audit-item { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 0.5rem; 
+        padding: 1.2rem;
+    }
+    .audit-time { min-width: auto; }
+    .audit-action { min-width: auto; }
+    
+    .search-bar { flex-direction: column; }
+    .search-bar .main-btn { width: 100%; }
+    
+    .modal-card { 
+        max-width: 95%; 
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .manager-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 1.75rem; }
+    .stat-card .value { font-size: 1.5rem; }
+}

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <link rel="stylesheet" href="/home/index.css">
+    <link rel="stylesheet" href="/subscription/index.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div id="topNotification" class="top-notification hidden">
+        <i class="fas fa-info-circle"></i>
+        <span>No action required, you are currently subscribed.</span>
+        <i class="fas fa-times close-btn" onclick="this.parentElement.classList.add('hidden')"></i>
+    </div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://dashboard.umbrasec.one" class="nav-item">Dashboard</a>
+                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <form method="POST" action="/logout" style="display:inline;">
+                    <button type="submit" class="nav-button"><i class="fas fa-right-from-bracket"></i> Disconnect</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="/" class="sidebar-link"><i class="fas fa-layer-group"></i> Command Center</a>
+            <a href="/#services" class="sidebar-link"><i class="fas fa-server"></i> Platform Services</a>
+            <a href="/subscription" class="sidebar-link active"><i class="fas fa-credit-card"></i> Subscription</a>
+            <a href="/admin" id="adminLink" class="sidebar-link hidden" style="color:var(--quantum-1)"><i class="fas fa-terminal"></i> Admin Console</a>
+        </aside>
+
+        <main class="main-area">
+            <!-- Loading State -->
+            <div id="loadingState">
+                <div class="section-label">Subscription Management</div>
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Subscription</h1>
+                <p><i class="fas fa-circle-notch fa-spin"></i> Loading subscription data...</p>
+            </div>
+
+            <!-- Main Content (hidden until loaded) -->
+            <div id="mainContent" class="hidden">
+                <div class="section-label">Subscription Management</div>
+                <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Subscription</h1>
+
+                <!-- Current Status Card -->
+                <div class="status-banner" id="statusBanner">
+                    <div class="status-banner-left">
+                        <div class="status-indicator" id="statusIndicator">
+                            <i class="fas fa-circle-check"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">Current Plan</div>
+                            <div class="status-plan" id="statusPlan">UmbraSec One</div>
+                            <div class="status-detail" id="statusDetail">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="status-banner-right">
+                        <div class="status-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Status</span>
+                                <span class="meta-value" id="metaStatus">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Renews</span>
+                                <span class="meta-value" id="metaRenewal">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Account ID</span>
+                                <span class="meta-value mono" id="metaAccountId">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions for inactive users -->
+                <div id="activateSection" class="hidden">
+                    <div class="activate-card">
+                        <div class="activate-content">
+                            <i class="fas fa-rocket activate-icon"></i>
+                            <div>
+                                <h3>Activate Your Subscription</h3>
+                                <p>Get full access to Encrypted VPN, Secure Storage, and all UmbraSec services.</p>
+                            </div>
+                        </div>
+                        <div class="activate-actions">
+                            <a href="/billing/crypto" class="main-btn"><i class="fab fa-bitcoin"></i> Pay with Crypto</a>
+                            <a href="/billing/checkout" class="outline-btn"><i class="fas fa-credit-card"></i> Pay with Card</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Crypto Payment -->
+                <div id="pendingPayment" class="hidden">
+                    <h2 style="margin: 2.5rem 0 1.5rem; font-size: 1.4rem;"><i class="fas fa-hourglass-half" style="color: var(--quantum-2); margin-right: 10px;"></i>Pending Payment</h2>
+                    <div class="glass-card pending-card">
+                        <div class="pending-grid">
+                            <div class="pending-info">
+                                <div class="pending-row">
+                                    <span class="pending-label">Currency</span>
+                                    <span class="pending-value" id="pendingCurrency">--</span>
+                                </div>
+                                <div class="pending-row">
+                                    <span class="pending-label">Amount</span>
+                                    <span class="pending-value mono" id="pendingAmount">--</span>
+                                </div>
+                                <div class="pending-row">
+                                    <span class="pending-label">Status</span>
+                                    <span class="pending-value" id="pendingStatus">--</span>
+                                </div>
+                                <div class="pending-row">
+                                    <span class="pending-label">Confirmations</span>
+                                    <span class="pending-value" id="pendingConfirmations">--</span>
+                                </div>
+                                <div class="pending-row">
+                                    <span class="pending-label">Expires</span>
+                                    <span class="pending-value" id="pendingExpires">--</span>
+                                </div>
+                            </div>
+                            <div class="pending-address">
+                                <div class="pending-label" style="margin-bottom: 8px;">Send to Address</div>
+                                <div class="address-box" id="pendingAddress">--</div>
+                                <button class="outline-btn btn-sm" style="margin-top: 12px; width: 100%;" onclick="copyAddress()">
+                                    <i class="fas fa-copy"></i> Copy Address
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Section -->
+                <h2 style="margin: 2.5rem 0 1.5rem; font-size: 1.4rem;"><i class="fas fa-layer-group" style="color: var(--quantum-1); margin-right: 10px;"></i>The Plan</h2>
+                <div class="plans-grid single-plan">
+                    <div class="plan-card current">
+                        <div class="plan-badge">UmbraSec One</div>
+                        <div class="plan-icon"><i class="fas fa-shield-halved"></i></div>
+                        <h3>Everything. One price.</h3>
+                        <div class="plan-price">
+                            <span class="price-amount" id="planPrice">$3</span>
+                            <span class="price-period">/ month</span>
+                        </div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Encrypted VPN (Zero-Log)</li>
+                            <li><i class="fas fa-check"></i> 100 GB Secure Storage</li>
+                            <li><i class="fas fa-check"></i> AES-256-GCM / Zero-Knowledge Encryption</li>
+                            <li><i class="fas fa-check"></i> Secure File Sharing & Burn-After-Read</li>
+                            <li><i class="fas fa-check"></i> Private Mail (E2EE)</li>
+                            <li><i class="fas fa-check"></i> Email-Based 2FA</li>
+                            <li><i class="fas fa-check"></i> Crypto Payments Accepted</li>
+                        </ul>
+                        <div class="plan-action" id="currentPlanAction">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <h2 style="margin: 2.5rem 0 1.5rem; font-size: 1.4rem;"><i class="fas fa-wallet" style="color: var(--quantum-3); margin-right: 10px;"></i>Payment Methods</h2>
+                <div class="payment-methods">
+                    <a href="/billing/crypto" class="payment-method">
+                        <div class="payment-icon"><i class="fab fa-bitcoin"></i></div>
+                        <div class="payment-info">
+                            <h4>Cryptocurrency</h4>
+                            <p>Bitcoin & Monero accepted. Maximum privacy.</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="/billing/checkout" class="payment-method">
+                        <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="payment-info">
+                            <h4>Card / Standard</h4>
+                            <p>Via Polar. Visa, Mastercard, and more.</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+
+                <!-- Manage Section (for active users) -->
+                <div id="manageSection" class="hidden">
+                    <h2 style="margin: 2.5rem 0 1.5rem; font-size: 1.4rem;"><i class="fas fa-gear" style="color: var(--fg-muted); margin-right: 10px;"></i>Manage Subscription</h2>
+                    <div class="glass-card" style="padding: 1.5rem 2rem;">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <p style="margin: 0; font-size: 0.9rem;">Need to cancel? Your access will remain active until the end of your billing period.</p>
+                            <input type="password" id="cancelPassword" class="search-input" placeholder="Enter your password to confirm" style="max-width: 350px;">
+                            <div>
+                                <button class="btn-danger" onclick="cancelSubscription()" id="btnCancel">Cancel Subscription</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        let csrfToken = '';
+        let dashData = null;
+
+        // Handle URL parameters for messages immediately
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('msg') === 'already_subscribed') {
+            document.getElementById('topNotification').classList.remove('hidden');
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color:${type === 'error' ? '#ef4444' : 'var(--quantum-3)'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function copyAddress() {
+            const addr = document.getElementById('pendingAddress').textContent;
+            navigator.clipboard.writeText(addr);
+            showToast('Address copied to clipboard');
+        }
+
+        async function apiAction(url, body = {}) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': csrfToken },
+                body: new URLSearchParams({ ...body, _csrf: csrfToken }),
+                credentials: 'same-origin',
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                const err = new Error(data.error || 'Action failed');
+                err.requires_2fa = !!data.requires_2fa;
+                throw err;
+            }
+            return res.json();
+        }
+
+        function showCustomPrompt(message, callback) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay active';
+            overlay.innerHTML = `
+                <div class="glass-card modal-card" style="max-width:420px;">
+                    <div class="modal-header">
+                        <h3>Input Required</h3>
+                        <button class="close-modal" id="promptClose"><i class="fas fa-times"></i></button>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--fg-muted); margin-bottom:1.5rem;">${message}</p>
+                    <div class="manager-field">
+                        <input type="text" id="promptInput" class="search-input" placeholder="Enter code" autocomplete="off">
+                    </div>
+                    <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                        <button class="outline-btn" style="flex:1;" id="promptCancel">Cancel</button>
+                        <button class="main-btn" style="flex:1;" id="promptConfirm">Confirm</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            const input = overlay.querySelector('#promptInput');
+            input.focus();
+            function close(value) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.remove(), 300);
+                callback(value);
+            }
+            overlay.querySelector('#promptClose').onclick = () => close(null);
+            overlay.querySelector('#promptCancel').onclick = () => close(null);
+            overlay.querySelector('#promptConfirm').onclick = () => close(input.value);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') close(input.value);
+                if (e.key === 'Escape') close(null);
+            });
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) close(null); });
+        }
+
+        function showCustomConfirm(message, onConfirm) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay active';
+            overlay.innerHTML = `
+                <div class="glass-card modal-card" style="max-width:420px;">
+                    <div class="modal-header">
+                        <h3>Confirm Action</h3>
+                        <button class="close-modal" id="confirmClose"><i class="fas fa-times"></i></button>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--fg-muted); margin-bottom:1.5rem;">${message}</p>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="outline-btn" style="flex:1;" id="confirmCancel">Cancel</button>
+                        <button class="main-btn" style="flex:1;" id="confirmOk">Confirm</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            function close(result) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.remove(), 300);
+                if (result) onConfirm();
+            }
+            overlay.querySelector('#confirmClose').onclick = () => close(false);
+            overlay.querySelector('#confirmCancel').onclick = () => close(false);
+            overlay.querySelector('#confirmOk').onclick = () => close(true);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
+        }
+
+        async function apiActionWith2FA(url, body) {
+            try {
+                return await apiAction(url, body);
+            } catch (err) {
+                if (err.requires_2fa) {
+                    await apiAction('/api/user/2fa/send-code', {});
+                    return new Promise((resolve, reject) => {
+                        showCustomPrompt('A verification code was sent to your email. Enter it here:', async (code) => {
+                            if (!code) return reject(new Error('Verification cancelled'));
+                            try {
+                                const result = await apiAction(url, { ...body, verification_code: code });
+                                resolve(result);
+                            } catch (innerErr) { reject(innerErr); }
+                        });
+                    });
+                }
+                throw err;
+            }
+        }
+
+        function cancelSubscription() {
+            const password = document.getElementById('cancelPassword').value;
+            if (!password) return showToast('Password is required to cancel subscription', 'error');
+            showCustomConfirm('Are you sure you want to cancel your subscription? You will retain access until the current period ends.', async () => {
+                const btn = document.getElementById('btnCancel');
+                btn.disabled = true;
+                btn.textContent = 'Cancelling...';
+                try {
+                    await apiActionWith2FA('/api/user/cancel-subscription', { password });
+                    showToast('Subscription cancelled. Access remains until period end.');
+                    setTimeout(() => location.reload(), 2000);
+                } catch (err) {
+                    showToast(err.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Cancel Subscription';
+                }
+            });
+        }
+
+        async function loadSubscription() {
+            try {
+                // Load dashboard data (gives us user info + subscription status)
+                const res = await fetch('/api/dashboard', { credentials: 'same-origin' });
+                if (res.status === 401 || res.redirected) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (!res.ok) throw new Error('Failed to load');
+
+                dashData = await res.json();
+                csrfToken = dashData.csrfToken;
+                const status = (dashData.subscriptionStatus || '').trim().toLowerCase();
+                const isActive = status === 'active' || status === 'lifetime';
+
+                // Show admin link
+                if (dashData.role === 'admin') {
+                    document.getElementById('adminLink').classList.remove('hidden');
+                }
+
+                // Fill status banner
+                const banner = document.getElementById('statusBanner');
+                const indicator = document.getElementById('statusIndicator');
+
+                if (isActive) {
+                    banner.classList.add('active');
+                    indicator.innerHTML = '<i class="fas fa-circle-check"></i>';
+                    document.getElementById('statusDetail').textContent = 'All services are active and operational.';
+                    document.getElementById('metaStatus').innerHTML = '<span class="pill pill-active">Active</span>';
+
+                    if (dashData.subscriptionExpiresAt) {
+                        const exp = new Date(dashData.subscriptionExpiresAt);
+                        document.getElementById('metaRenewal').textContent = exp.toLocaleDateString();
+                    } else {
+                        document.getElementById('metaRenewal').textContent = 'Lifetime';
+                    }
+
+                    document.getElementById('currentPlanAction').innerHTML = '<button class="main-btn btn-full" disabled style="opacity:0.6;"><i class="fas fa-check"></i> Active</button>';
+                    document.getElementById('manageSection').classList.remove('hidden');
+                } else {
+                    banner.classList.add('inactive');
+                    indicator.innerHTML = '<i class="fas fa-circle-pause"></i>';
+                    document.getElementById('statusPlan').textContent = 'No Active Plan';
+                    document.getElementById('statusDetail').textContent = 'Subscribe to unlock all UmbraSec services.';
+                    document.getElementById('metaStatus').innerHTML = '<span class="pill pill-inactive">Inactive</span>';
+                    document.getElementById('metaRenewal').textContent = 'N/A';
+
+                    document.getElementById('activateSection').classList.remove('hidden');
+                    document.getElementById('currentPlanAction').innerHTML = '<a href="/billing/crypto" class="main-btn btn-full"><i class="fas fa-bolt"></i> Subscribe Now</a>';
+                }
+
+                document.getElementById('metaAccountId').textContent = dashData.accountId || '---';
+
+                // Check for pending crypto payment
+                if (dashData.hasCrypto) {
+                    try {
+                        const cryptoRes = await fetch('/api/billing/crypto/status', { credentials: 'same-origin' });
+                        if (cryptoRes.ok) {
+                            const cryptoData = await cryptoRes.json();
+                            if (cryptoData.status === 'pending' || cryptoData.status === 'confirming') {
+                                const p = cryptoData.payment;
+                                document.getElementById('pendingPayment').classList.remove('hidden');
+                                document.getElementById('pendingCurrency').textContent = p.currency.toUpperCase();
+                                document.getElementById('pendingAmount').textContent = `${p.amount_crypto} ${p.currency.toUpperCase()} (~$${p.amount_usd})`;
+                                document.getElementById('pendingStatus').innerHTML = cryptoData.status === 'confirming'
+                                    ? '<span class="pill pill-active">Confirming</span>'
+                                    : '<span class="pill pill-pending">Awaiting Payment</span>';
+                                document.getElementById('pendingConfirmations').textContent = `${p.confirmations || 0} / ${p.currency === 'btc' ? 2 : 10}`;
+                                document.getElementById('pendingExpires').textContent = new Date(p.expires_at).toLocaleString();
+                                document.getElementById('pendingAddress').textContent = p.wallet_address;
+                            }
+                        }
+                    } catch (e) { /* crypto status optional */ }
+                }
+
+                // Transition UI
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+
+            } catch (err) {
+                console.error('Load error:', err);
+                document.getElementById('loadingState').innerHTML = '<span style="color:#ef4444"><i class="fas fa-triangle-exclamation"></i> Failed to load subscription data. Please reload.</span>';
+            }
+        }
+
+        loadSubscription();
+    </script>
+</body>
+</html>

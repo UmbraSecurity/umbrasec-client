@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UmbraSec OSINT | Intelligence Report</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="app-wrapper">
+        <header>
+            <div class="logo-area">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <div class="brand">
+                    <span class="logo-text">UmbraSec OSINT</span>
+                    <span class="subtitle">Intelligence Aggregator</span>
+                </div>
+            </div>
+            <div class="status-monitor">
+                <div class="status-item">
+                    <span class="label">Status</span>
+                    <span class="value success" id="system-status">READY</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="main-content">
+                <div class="control-panel">
+                    <div class="panel-header" style="margin-bottom: 1rem;">
+                        <h2 style="font-size: 1.1rem; color: var(--text-primary);">Target Intelligence Vectors</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Fill in any known information. The system will attempt to cross-reference and discover the missing fields automatically.</p>
+                    </div>
+                    <div class="input-grid">
+                        <div class="input-field">
+                            <label for="input-realname">Real Name</label>
+                            <textarea id="input-realname" rows="2" placeholder="e.g. John Doe, Jane Doe" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-username">Username</label>
+                            <textarea id="input-username" rows="2" placeholder="e.g. jdoe99, admin" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-email">Email Address</label>
+                            <textarea id="input-email" rows="2" placeholder="e.g. john@example.com" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-phone">Phone Number</label>
+                            <textarea id="input-phone" rows="2" placeholder="e.g. +1234567890" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-domain">Domain</label>
+                            <textarea id="input-domain" rows="2" placeholder="e.g. example.com, test.com" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-ip">IP Address</label>
+                            <textarea id="input-ip" rows="2" placeholder="e.g. 192.168.1.1, 10.0.0.1" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-address">Physical Address</label>
+                            <textarea id="input-address" rows="2" placeholder="e.g. 123 Main St, City" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-field">
+                            <label for="input-crypto">Crypto Wallet</label>
+                            <textarea id="input-crypto" rows="2" placeholder="e.g. 0x... or bc1..." autocomplete="off"></textarea>
+                        </div>
+                    </div>
+                    <div class="action-bar" style="margin-top: 1.5rem; text-align: right;">
+                        <button id="scan-btn">Gather Intel</button>
+                    </div>
+                </div>
+
+                <div id="loading-overlay" class="hidden">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Aggregating public intelligence records...</div>
+                    <div class="loading-sub">This may take up to 10-15 seconds for extensive username searches.</div>
+                </div>
+
+                <div id="error-message" class="hidden"></div>
+
+                <div id="reports-container">
+                    <!-- HTML Reports will be generated here -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="disclaimer">
+                <span>Aggregates public data from open sources (DNS, APIs). Filtered for accuracy. No intrusive scanning performed.</span>
+            </div>
+            <div class="copyright">&copy; 2026 UmbraSec</div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

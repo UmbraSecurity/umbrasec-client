@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="/static/shared.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="auth-wrapper">
+        <div class="container-narrow">
+            <a href="https://umbrasec.one" class="brand" style="justify-content:center; margin-bottom:2rem; text-decoration:none;">Umbra<span>Security</span></a>
+            <div class="glass-card">
+                <h1>Welcome back</h1>
+                <p class="subtitle">Sign in to your secure environment</p>
+                <div class="msg msg-error" id="error"></div>
+                <form id="loginForm" method="POST" action="/login">
+                    <input type="hidden" name="_csrf" id="csrf">
+                    <label for="email">Email or Username</label>
+                    <input type="text" id="email" name="email" required autocomplete="username">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <div class="form-link">
+                    <a href="/register">Create an account</a>
+                    &nbsp;&middot;&nbsp;
+                    <a href="/register/anonymous">Anonymous signup</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Fetch CSRF token on page load
+        fetch('/api/csrf', { credentials: 'same-origin' })
+            .then(r => r.json())
+            .then(data => { document.getElementById('csrf').value = data.csrfToken; })
+            .catch(() => {});
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const errEl = document.getElementById('error');
+            const btn = form.querySelector('button[type="submit"]');
+            errEl.style.display = 'none';
+
+            btn.classList.add('loading');
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(form)),
+                    credentials: 'same-origin',
+                    redirect: 'follow',
+                });
+                if (!res.ok) {
+                    errEl.textContent = await res.text();
+                    errEl.style.display = 'block';
+                    btn.classList.remove('loading');
+                } else {
+                    const data = await res.json();
+                    window.location.href = data.redirect || 'https://dashboard.umbrasec.one';
+                }
+            } catch (err) {
+                errEl.textContent = 'Network error. Please try again.';
+                errEl.style.display = 'block';
+                btn.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html>

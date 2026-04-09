@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN Node Manager — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <link rel="stylesheet" href="/manager.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://dashboard.umbrasec.one" class="nav-item">Command Center</a>
+                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <form method="POST" action="/logout" style="display:inline;">
+                    <button type="submit" class="nav-button">Terminate Session</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="user-welcome">
+            <div class="section-label">Node Management Protocol</div>
+            <h1>Secure VPN Access</h1>
+            <p id="loadingText">Synchronizing with network backbone...</p>
+        </section>
+
+        <div id="managerContent" class="hidden">
+            <div class="grid grid-2">
+                <!-- Status Card -->
+                <div class="glass-card">
+                    <div class="section-label">Access Status</div>
+                    <h3>Operational Clearance</h3>
+                    <div class="status-box" id="subBox">
+                        <i class="fas fa-key"></i>
+                        <div>
+                            <div id="subStatus">Checking...</div>
+                            <span class="detail" id="expiryDetail">Protocol lease active</span>
+                        </div>
+                    </div>
+                    
+                    <div id="subAction" class="hidden" style="margin-top: 1.5rem;">
+                        <a href="https://dashboard.umbrasec.one/subscription/" class="main-btn btn-sm">Renew Clearance</a>
+                    </div>
+                </div>
+
+                <!-- Profile Card -->
+                <div class="glass-card" id="profileCard">
+                    <div class="section-label">Active Tunnel</div>
+                    <h3>Connection Profile</h3>
+                    
+                    <div id="noProfile" class="hidden">
+                        <p style="margin-bottom: 1.5rem;">No encrypted tunnel profile detected for this operative. Provisioning is required for network access.</p>
+                        <button class="main-btn" id="provisionBtn">
+                            <i class="fas fa-plus"></i> Establish Tunnel Profile
+                        </button>
+                    </div>
+
+                    <div id="hasProfile" class="hidden">
+                        <div class="profile-info">
+                            <div class="info-bit">
+                                <label>Protocol Type</label>
+                                <span>OpenVPN (UDP)</span>
+                            </div>
+                            <div class="info-bit">
+                                <label>Encryption</label>
+                                <span>AES-256-GCM</span>
+                            </div>
+                        </div>
+                        <a href="/api/vpn/download" class="main-btn btn-full">
+                            <i class="fas fa-download"></i> Download Configuration (.ovpn)
+                        </a>
+                        <p style="font-size: 0.75rem; color: var(--fg-muted); text-align: center; margin-top: 1rem;">
+                            Profile is unique to this account identifier.
+                        </p>
+                    </div>
+
+                    <div id="locked" class="hidden">
+                        <div style="text-align: center; padding: 1rem;">
+                            <i class="fas fa-lock" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                            <p>Active protocol lease required to provision encrypted network nodes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Routing Mode -->
+            <div id="routingSection" class="hidden" style="margin-top: 2rem;">
+                <div class="glass-card">
+                    <div class="section-label">Traffic Routing</div>
+                    <h3>Routing Protocol</h3>
+                    <p style="font-size: 0.85rem; color: var(--fg-muted); margin-bottom: 1.5rem;">Select how your VPN traffic is routed through the network.</p>
+                    <div class="routing-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <button class="routing-btn" id="routeStandard" onclick="setRouting('standard')" style="padding: 1.2rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-glass); color: var(--fg-primary); cursor: pointer; text-align: center; transition: all 0.2s;">
+                            <i class="fas fa-route" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                            <div style="font-weight: 700; font-size: 0.85rem;">Standard</div>
+                            <div style="font-size: 0.7rem; color: var(--fg-muted); margin-top: 4px;">Direct connection</div>
+                        </button>
+                        <button class="routing-btn" id="routeMultihop" onclick="setRouting('multi-hop')" style="padding: 1.2rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-glass); color: var(--fg-primary); cursor: pointer; text-align: center; transition: all 0.2s;">
+                            <i class="fas fa-shuffle" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                            <div style="font-weight: 700; font-size: 0.85rem;">Multi-Hop</div>
+                            <div style="font-size: 0.7rem; color: var(--fg-muted); margin-top: 4px;">Chain through nodes</div>
+                        </button>
+                        <button class="routing-btn" id="routeTor" onclick="setRouting('tor')" style="padding: 1.2rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-glass); color: var(--fg-primary); cursor: pointer; text-align: center; transition: all 0.2s;">
+                            <i class="fas fa-shield-halved" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                            <div style="font-weight: 700; font-size: 0.85rem;">TOR</div>
+                            <div style="font-size: 0.7rem; color: var(--fg-muted); margin-top: 4px;">Route through TOR</div>
+                        </button>
+                    </div>
+                    <div id="routingStatus" style="text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--fg-muted);"></div>
+                </div>
+            </div>
+
+            <section style="margin-top: 4rem;">
+                <div class="section-label">Connection Guide</div>
+                <div class="grid grid-3">
+                    <div class="glass-card">
+                        <h4>1. Acquire Node</h4>
+                        <p>Provision your unique .ovpn configuration file from this dashboard.</p>
+                    </div>
+                    <div class="glass-card">
+                        <h4>2. Import Key</h4>
+                        <p>Import the file into any OpenVPN compatible client (Windows, Mac, iOS, Android, Linux).</p>
+                    </div>
+                    <div class="glass-card">
+                        <h4>3. Secure Link</h4>
+                        <p>Connect to established nodes to begin your zero-trace browsing session.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Umbra Security Operations.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/manager.js"></script>
+</body>
+</html>

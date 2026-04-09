@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Payment — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/shared.css">
+    <style>
+        .crypto-options { display: flex; gap: 1rem; margin: 1.2rem 0; }
+        .crypto-opt {
+            flex: 1;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .crypto-opt:hover, .crypto-opt.selected {
+            border-color: var(--quantum-3);
+            background: rgba(45, 212, 191, 0.05);
+        }
+        .crypto-opt .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .crypto-opt .name { font-weight: 600; color: #fff; }
+        .crypto-opt .price { color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.3rem; }
+        .payment-details { text-align: center; }
+        .qr-container { margin: 1.5rem 0; }
+        .qr-container img { border-radius: 12px; background: rgba(255,255,255,0.05); padding: 1rem; }
+        .address-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            color: var(--quantum-3);
+            cursor: pointer;
+            transition: border-color 0.3s;
+            position: relative;
+        }
+        .address-box:hover { border-color: var(--quantum-3); }
+        .address-box .copy-hint {
+            position: absolute;
+            top: -1.5rem;
+            right: 0;
+            font-size: 0.7rem;
+            color: var(--fg-muted);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .address-box:hover .copy-hint { opacity: 1; }
+        .amount-box {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--quantum-1);
+            cursor: pointer;
+        }
+        .status-box {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .status-pending { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); color: var(--warning); }
+        .status-confirming { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: var(--quantum-2); }
+        .status-confirmed { background: rgba(45, 212, 191, 0.1); border: 1px solid rgba(45, 212, 191, 0.3); color: var(--quantum-3); }
+        .timer { color: var(--fg-muted); font-size: 0.85rem; margin-top: 0.5rem; }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18049620600');
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://dashboard.umbrasec.one" class="nav-item">Dashboard</a>
+                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="max-width:600px;">
+        <h1>Crypto Payment</h1>
+        <p class="subtitle" id="loading">Loading payment options...</p>
+
+        <!-- Step 1: Choose currency -->
+        <div id="selectView" class="hidden">
+            <div class="glass-card">
+                <div class="section-label">Select Currency</div>
+                <p class="info">Pay <strong id="priceUsd"></strong> for <strong id="subDays"></strong> days of access.</p>
+                <div class="crypto-options" id="options"></div>
+                <button class="btn btn-primary" id="payBtn" disabled style="width:100%;">
+                    <i class="fas fa-lock"></i> Generate Payment Address
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Payment details -->
+        <div id="paymentView" class="hidden">
+            <div class="glass-card payment-details">
+                <div class="section-label" id="paymentCurrency"></div>
+                <div class="amount-box" id="amountDisplay" title="Click to copy"></div>
+                <div class="qr-container" id="qrContainer" style="display:none;">
+                    <img id="qrCode" alt="QR Code" style="max-width:200px;">
+                </div>
+                <p class="info" style="margin-bottom:0.5rem;">Send exactly this amount to:</p>
+                <div class="address-box" id="addressDisplay" title="Click to copy">
+                    <span class="copy-hint">Click to copy</span>
+                </div>
+                <div id="statusBox" class="status-box status-pending">
+                    <i class="fas fa-clock"></i> Waiting for payment...
+                </div>
+                <div class="timer" id="timer"></div>
+            </div>
+        </div>
+
+        <!-- Step 3: Confirmed -->
+        <div id="confirmedView" class="hidden">
+            <div class="glass-card" style="text-align:center;">
+                <div style="font-size:3rem; color:var(--quantum-3); margin-bottom:1rem;"><i class="fas fa-check-circle"></i></div>
+                <h2>Payment Confirmed</h2>
+                <p class="info">Your subscription is now active.</p>
+                <a href="/" class="btn btn-primary" style="width:auto; margin-top:1.5rem;">
+                    <i class="fas fa-arrow-right"></i> Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer" style="position:fixed; bottom:2rem; right:2rem; z-index:3000; display:flex; flex-direction:column; gap:0.5rem;"></div>
+
+    <script>
+        let csrfToken = '';
+        let selectedCurrency = null;
+        let pollInterval = null;
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.style.cssText = 'background:rgba(10,10,15,0.9); border:1px solid rgba(255,255,255,0.06); padding:1rem 1.5rem; border-radius:12px; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.5); display:flex; align-items:center; gap:12px; backdrop-filter:blur(10px);';
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color:${type === 'error' ? '#ef4444' : '#2dd4bf'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        async function loadOptions() {
+            try {
+                const res = await fetch('/api/billing/crypto/options', { credentials: 'same-origin' });
+                if (res.redirected || !res.ok) {
+                    window.location.href = '/login';
+                    return;
+                }
+                const ct = res.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    window.location.href = '/login';
+                    return;
+                }
+                const data = await res.json();
+                csrfToken = data.csrfToken;
+
+                // If there's a pending payment, show it
+                if (data.pending) {
+                    showPayment(data.pending);
+                    return;
+                }
+
+                document.getElementById('priceUsd').textContent = '$' + data.priceUsd.toFixed(2) + ' USD';
+                document.getElementById('subDays').textContent = data.days;
+
+                const optionsEl = document.getElementById('options');
+                for (const opt of data.options) {
+                    if (!opt.available) continue;
+                    const div = document.createElement('div');
+                    div.className = 'crypto-opt';
+                    div.dataset.currency = opt.currency;
+                    div.innerHTML = `
+                        <div class="icon">${opt.currency === 'btc' ? '<i class="fab fa-bitcoin"></i>' : '<i class="fas fa-coins"></i>'}</div>
+                        <div class="name">${opt.name}</div>
+                        <div class="price">${opt.price} ${opt.currency.toUpperCase()}</div>
+                    `;
+                    div.addEventListener('click', () => {
+                        document.querySelectorAll('.crypto-opt').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                        selectedCurrency = opt.currency;
+                        document.getElementById('payBtn').disabled = false;
+                    });
+                    optionsEl.appendChild(div);
+                }
+
+                if (data.options.filter(o => o.available).length === 0) {
+                    document.getElementById('loading').textContent = 'Crypto payments are not currently available.';
+                    return;
+                }
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('selectView').classList.remove('hidden');
+            } catch (err) {
+                document.getElementById('loading').textContent = 'Failed to load options.';
+            }
+        }
+
+        document.getElementById('payBtn')?.addEventListener('click', async () => {
+            if (!selectedCurrency) return;
+            const btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                const res = await fetch('/api/billing/crypto/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+                    body: JSON.stringify({ currency: selectedCurrency, _csrf: csrfToken }),
+                    credentials: 'same-origin',
+                });
+                if (!res.ok) {
+                    const data = await res.json();
+                    showToast(data.error || 'Failed', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-lock"></i> Generate Payment Address';
+                    return;
+                }
+                const data = await res.json();
+                showPaymentWithQR(data.payment, data.qr);
+            } catch (err) {
+                showToast('Network error.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock"></i> Generate Payment Address';
+            }
+        });
+
+        function showPayment(payment) {
+            // Fetch QR for existing payment
+            fetch('/api/billing/crypto/status', { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'confirmed') {
+                        showConfirmed();
+                    } else {
+                        showPaymentWithQR(data.payment, data.qr);
+                    }
+                });
+        }
+
+        function showPaymentWithQR(payment, qr) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('selectView').classList.add('hidden');
+            document.getElementById('paymentView').classList.remove('hidden');
+
+            const currName = payment.currency === 'btc' ? 'Bitcoin' : 'Monero';
+            document.getElementById('paymentCurrency').textContent = 'Pay with ' + currName;
+            document.getElementById('amountDisplay').textContent = payment.amount_crypto + ' ' + payment.currency.toUpperCase();
+            document.getElementById('addressDisplay').innerHTML = payment.wallet_address + '<span class="copy-hint">Click to copy</span>';
+            if (qr) {
+                document.getElementById('qrCode').src = qr;
+                document.getElementById('qrContainer').style.display = 'block';
+            }
+
+            updateStatus(payment.status);
+            startTimer(payment.expires_at);
+            startPolling();
+
+            // Copy handlers
+            document.getElementById('addressDisplay').onclick = () => {
+                navigator.clipboard.writeText(payment.wallet_address);
+                flashCopied(document.getElementById('addressDisplay'));
+            };
+            document.getElementById('amountDisplay').onclick = () => {
+                navigator.clipboard.writeText(payment.amount_crypto);
+                flashCopied(document.getElementById('amountDisplay'));
+            };
+        }
+
+        function updateStatus(status) {
+            const box = document.getElementById('statusBox');
+            if (status === 'pending') {
+                box.className = 'status-box status-pending';
+                box.innerHTML = '<i class="fas fa-clock"></i> Waiting for payment...';
+            } else if (status === 'confirming') {
+                box.className = 'status-box status-confirming';
+                box.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Payment detected, waiting for confirmation...';
+            }
+        }
+
+        function showConfirmed() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('selectView').classList.add('hidden');
+            document.getElementById('paymentView').classList.add('hidden');
+            document.getElementById('confirmedView').classList.remove('hidden');
+            if (pollInterval) clearInterval(pollInterval);
+        }
+
+        function startTimer(expiresAt) {
+            const timerEl = document.getElementById('timer');
+            const update = () => {
+                const remaining = new Date(expiresAt) - Date.now();
+                if (remaining <= 0) {
+                    timerEl.textContent = 'Payment expired. Return to dashboard to try again.';
+                    if (pollInterval) clearInterval(pollInterval);
+                    return;
+                }
+                const min = Math.floor(remaining / 60000);
+                const sec = Math.floor((remaining % 60000) / 1000);
+                timerEl.textContent = `Expires in ${min}:${sec.toString().padStart(2, '0')}`;
+            };
+            update();
+            setInterval(update, 1000);
+        }
+
+        function startPolling() {
+            pollInterval = setInterval(async () => {
+                try {
+                    const res = await fetch('/api/billing/crypto/status', { credentials: 'same-origin' });
+                    const data = await res.json();
+                    if (data.status === 'confirmed') {
+                        showConfirmed();
+                    } else if (data.status === 'confirming') {
+                        updateStatus('confirming');
+                    } else if (data.status === 'none') {
+                        // Payment expired or cancelled
+                        if (pollInterval) clearInterval(pollInterval);
+                    }
+                } catch {}
+            }, 10000); // Poll every 10 seconds
+        }
+
+        function flashCopied(el) {
+            el.style.borderColor = 'var(--quantum-3)';
+            const orig = el.textContent;
+            const hint = el.querySelector('.copy-hint');
+            if (hint) { hint.textContent = 'Copied!'; hint.style.opacity = '1'; }
+            setTimeout(() => {
+                el.style.borderColor = '';
+                if (hint) { hint.textContent = 'Click to copy'; hint.style.opacity = ''; }
+            }, 1500);
+        }
+
+        loadOptions();
+    </script>
+</body>
+</html>

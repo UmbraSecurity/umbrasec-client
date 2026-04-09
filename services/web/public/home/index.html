@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UmbraSec | Next Gen Security</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+        <link rel="stylesheet" href="./index.css">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KDT3CSZX');</script>
+    <!-- End Google Tag Manager -->
+    </head>
+    <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDT3CSZX"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <div class="background"></div>
+
+        <header class="nav-container">
+            <div class="nav-inner">
+                <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+                <div class="nav-links">
+                    <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+                    <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+                    <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+                    <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+                    <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                    <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+                </div>
+                <button class="mobile-menu-btn" onclick="document.querySelector('.mobile-overlay').classList.add('active');document.querySelector('.mobile-sidebar').classList.add('active');" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+            </div>
+        </header>
+
+        <div class="mobile-overlay" onclick="this.classList.remove('active');document.querySelector('.mobile-sidebar').classList.remove('active');"></div>
+        <div class="mobile-sidebar">
+            <button class="sidebar-close-btn" onclick="document.querySelector('.mobile-overlay').classList.remove('active');this.parentElement.classList.remove('active');" aria-label="Close menu"><i class="fas fa-times"></i></button>
+            <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
+            <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
+            <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
+            <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
+            <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+            <a href="https://portal.umbrasec.one" class="nav-button">Client Access</a>
+        </div>
+
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                <div class="hero-badge">Encrypted, Untraceable, Secure. <span style="color: cornflowerblue; font-weight: bold;">$3/mo</span></div>
+                    <h1>Engineering the <br><span class="gradient-text">Future of Privacy.</span></h1>
+                    <p>VPN, encrypted drive, and private mail &mdash; all under one subscription for just $3/mo. No logs. No tracking.</p>
+                    <div class="hero-cta">
+                        <a href="https://portal.umbrasec.one/register" class="main-btn hero-main-btn"><i class="fas fa-rocket"></i> Get Started</a>
+                        <a href="https://umbrasec.one/one-package" class="outline-btn">View Plans <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <p class="hero-microcopy">No email address required. Pay with crypto. Instant activation.</p>
+                </div>
+            </section>
+
+            <section class="services">
+                <div class="section-label">Core Capabilities</div>
+
+                <div class="feature-rows">
+                <div class="feature-row">
+                    <div class="feature-text">
+                        <div class="card-icon"><i class="fas fa-cloud"></i></div>
+                        <h3>Personal Drive</h3>
+                        <p>100GB of encrypted cloud storage. Upload, organize, and share files securely with AES-256 encryption at rest.</p>
+                        <div class="feature-meta">
+                            <span class="price-pill">Included in Package</span>
+                            <a href="https://umbrasec.one/drive" class="card-link">Explore <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="preview-carousel">
+                            <div class="preview-track">
+                                <img src="/CDN/images/advertising/drive-001.png" alt="Drive screenshot 1" class="preview-img active">
+                                <img src="/CDN/images/advertising/drive-002.png" alt="Drive screenshot 2" class="preview-img">
+                                <img src="/CDN/images/advertising/drive-003.png" alt="Drive screenshot 3" class="preview-img">
+                            </div>
+                            <div class="preview-dots">
+                                <button class="dot active" aria-label="Image 1"></button>
+                                <button class="dot" aria-label="Image 2"></button>
+                                <button class="dot" aria-label="Image 3"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-row">
+                    <div class="feature-text">
+                        <div class="card-icon"><i class="fas fa-shield"></i></div>
+                        <h3>Zero-Trust Networking</h3>
+                        <p>Dedicated OpenVPN tunnel with zero logging. Route all traffic through encrypted channels with DNS leak protection.</p>
+                        <div class="feature-meta">
+                            <span class="price-pill">Included in Package</span>
+                            <a href="https://umbrasec.one/vpn" class="card-link">Explore <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="preview-carousel">
+                            <div class="preview-track">
+                                <img src="/CDN/images/advertising/vpn-001.png" alt="VPN screenshot 1" class="preview-img active">
+                                <img src="/CDN/images/advertising/vpn-002.png" alt="VPN screenshot 2" class="preview-img">
+                                <img src="/CDN/images/advertising/vpn-003.png" alt="VPN screenshot 3" class="preview-img">
+                            </div>
+                            <div class="preview-dots">
+                                <button class="dot active" aria-label="Image 1"></button>
+                                <button class="dot" aria-label="Image 2"></button>
+                                <button class="dot" aria-label="Image 3"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-row">
+                    <div class="feature-text">
+                        <div class="card-icon"><i class="fas fa-envelope"></i></div>
+                        <h3>Secure Mailbox</h3>
+                        <p>Private email on your own @umbrasec.one domain. Full IMAP/SMTP access with an optional AI-powered mail assistant.</p>
+                        <div class="feature-meta">
+                            <span class="price-pill">Included in Package</span>
+                            <a href="https://umbrasec.one/mail" class="card-link">Explore <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="preview-carousel">
+                            <div class="preview-track">
+                                <img src="/CDN/images/advertising/mail-001.png" alt="Mail screenshot 1" class="preview-img active">
+                                <img src="/CDN/images/advertising/mail-002.png" alt="Mail screenshot 2" class="preview-img">
+                                <img src="/CDN/images/advertising/mail-003.png" alt="Mail screenshot 3" class="preview-img">
+                            </div>
+                            <div class="preview-dots">
+                                <button class="dot active" aria-label="Image 1"></button>
+                                <button class="dot" aria-label="Image 2"></button>
+                                <button class="dot" aria-label="Image 3"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="services-grid">
+                    <div class="package-card">
+                        <div class="card-body">
+                            <h3>Everything in one subscription</h3>
+                            <p>VPN, encrypted drive, and private mail &mdash; all included for one low monthly price. Pay with crypto for maximum anonymity.</p>
+                            <div class="card-meta">
+                                <span class="price-pill">$3/mo</span>
+                                <a href="https://umbrasec.one/one-package" class="card-link">View Package <i class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                        <p class="package-microcopy">No email address required. Instant activation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="trust-section">
+                <div class="section-label" style="text-align: center; margin-bottom: 3rem;">Why UmbraSec?</div>
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fas fa-eye-slash"></i></div>
+                        <h4>Zero Logging</h4>
+                        <p>We don't store connection logs, traffic metadata, or browsing history. Your activity is yours alone.</p>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fab fa-bitcoin"></i></div>
+                        <h4>Crypto Payments</h4>
+                        <p>Pay with Bitcoin or Monero. Register anonymously without an email address for complete privacy.</p>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fas fa-lock"></i></div>
+                        <h4>AES-256 Encryption</h4>
+                        <p>AES-256-GCM and CHACHA20-POLY1305 encryption protects your files, emails, and VPN traffic at every layer.</p>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fas fa-server"></i></div>
+                        <h4>Hardened Infrastructure</h4>
+                        <p>Your data lives on secured, hardened servers with strict access controls and regular security audits.</p>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fas fa-id-badge"></i></div>
+                        <h4>No KYC Required</h4>
+                        <p>With anonymous accounts & payment, "know your customer" is not a requirement.</p>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon"><i class="fas fa-box"></i></div>
+                        <h4>UmbraSec Suite</h4>
+                        <p>You get access to a whole suite of useful tools; and more to come with no additional cost.</p>
+                    </div>
+                    
+                </div>
+            </section>
+
+            <section class="tech-section">
+                <div class="section-label" style="text-align: center; margin-bottom: 3rem;">Under the Hood</div>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-icon"><i class="fas fa-microchip"></i></div>
+                        <h4>Hardened Linux Servers</h4>
+                        <p>Infrastructure runs on hardened Linux environments with strict kernel configuration, minimal service exposure, and systemd security sandboxing.</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon"><i class="fas fa-network-wired"></i></div>
+                        <h4>OpenVPN + DNS Leak Protection</h4>
+                        <p>Full-tunnel OpenVPN with CHACHA20-POLY1305 and AES-256-GCM ciphers, TLS 1.3 minimum, and built-in DNS leak protection. All DNS queries resolve through Quad9's security-focused resolvers with IPv6 leak blocking.</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon"><i class="fas fa-robot"></i></div>
+                        <h4>Optional AI Mail Assistant</h4>
+                        <p>An optional AI assistant (Zeroclaw) can summarize, categorize, and draft emails. It connects to external AI providers using your own API key &mdash; you choose the provider and control when it's used.</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon"><i class="fas fa-database"></i></div>
+                        <h4>Encrypted Storage Layer</h4>
+                        <p>Files are encrypted with AES-256-GCM at rest. Each file gets a unique initialization vector, and each user has a unique encryption salt for key derivation. API keys are also encrypted at rest.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="final-cta-section">
+                <div class="final-cta-content">
+                    <h2>Ready to take back your privacy?</h2>
+                    <p>VPN, encrypted drive, and private mail &mdash; $3/mo. Anonymous sign-up with crypto.</p>
+                    <a href="https://portal.umbrasec.one/register" class="main-btn hero-main-btn"><i class="fas fa-rocket"></i> Get Started Now</a>
+                    <p class="hero-microcopy">No email address required. Pay with crypto. Instant activation.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-wrap">
+                <div class="footer-brand">
+                    <div class="brand">UMBRA<span>SECURITY</span></div>
+                    <p>Secure Operations & Infrastructure</p>
+                </div>
+                <div class="footer-bottom-bar">
+                    <p>&copy; 2026 Umbra Security. All rights reserved.</p>
+                    <div class="footer-socials">
+                        <a href="mailto:jason@umbrasec.one"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="./index.js"></script>
+    </body>
+</html>

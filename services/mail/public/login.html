@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Login — Umbra Mail</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Umbra Mail">
+  <link rel="apple-touch-icon" href="/CDN/images/icon-192.png">
+  <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --accent: #2dd4bf;
+      --accent-hover: #14b8a6;
+      --bg: #0a0d14;
+      --bg-card: #111520;
+      --border: rgba(255,255,255,0.07);
+      --fg: #e8edf5;
+      --fg-secondary: #9ba4b5;
+      --fg-tertiary: #6b7280;
+      --danger: #ef4444;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--fg);
+      min-height: 100vh; min-height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      padding-top: max(20px, env(safe-area-inset-top));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .login-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 36px 32px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; justify-content: center;
+      margin-bottom: 8px;
+    }
+    .brand i { font-size: 1.4rem; color: var(--accent); }
+    .brand span { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+    .subtitle {
+      text-align: center; color: var(--fg-secondary); font-size: 0.85rem; margin-bottom: 28px;
+    }
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+    .field label {
+      font-size: 0.78rem; font-weight: 600; color: var(--fg-secondary);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .field input {
+      padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.04); color: var(--fg); font-size: 0.9rem;
+      font-family: var(--font); outline: none; transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .error-msg {
+      display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+      color: var(--danger); padding: 10px 14px; border-radius: var(--radius-sm);
+      font-size: 0.85rem; margin-bottom: 16px;
+    }
+    .submit-btn {
+      width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
+      background: var(--accent); color: #111; font-weight: 700; font-size: 0.9rem;
+      font-family: var(--font); cursor: pointer; transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .submit-btn:hover { background: var(--accent-hover); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn .spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2);
+      border-top-color: #111; border-radius: 50%; animation: spin 0.6s linear infinite;
+      display: none;
+    }
+    .submit-btn.loading .spinner { display: block; }
+    .submit-btn.loading span { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .links {
+      margin-top: 20px; text-align: center; font-size: 0.82rem; color: var(--fg-tertiary);
+    }
+    .links a { color: var(--accent); text-decoration: none; }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="brand"><i class="fa-solid fa-shield-halved"></i><span>Umbra Mail</span></div>
+    <p class="subtitle">Sign in to your secure mailbox</p>
+    <div class="error-msg" id="error"></div>
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="email">Email or Username</label>
+        <input type="text" id="email" name="email" required autocomplete="username" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Your password">
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <div class="spinner"></div>
+        <span>Sign In</span>
+      </button>
+    </form>
+    <div class="links">
+      <a href="https://portal.umbrasec.one/register">Create an account</a>
+      &middot;
+      <a href="https://portal.umbrasec.one/register/anonymous">Anonymous signup</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const errEl = document.getElementById('error');
+      errEl.style.display = 'none';
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            _csrf: 'disabled',
+          }),
+          credentials: 'same-origin',
+        });
+
+        if (!res.ok) {
+          errEl.textContent = await res.text();
+          errEl.style.display = 'block';
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          return;
+        }
+
+        // Portal returns { redirect: '...' } — we stay in the mail app
+        window.location.href = '/';
+      } catch (err) {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
