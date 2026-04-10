@@ -14,3 +14,6 @@ runtime/
 
 # 5. Whitelist this .gitignore file itself (optional but recommended)
 !.gitignore
+
+# 6. Whitelist README
+!README.md
