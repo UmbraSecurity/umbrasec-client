@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — UmbraSec</title>
+    <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
+    <link rel="stylesheet" href="/support/index.css">
+</head>
+<body>
+    <div class="background"></div>
+
+    <header class="nav-container">
+        <div class="nav-inner">
+            <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
+            <div class="nav-links">
+                <a href="https://dashboard.umbrasec.one" class="nav-item">Dashboard</a>
+                <a href="/support" class="nav-item" style="color:#fff;">Support</a>
+                <form method="POST" action="/logout" style="display:inline;">
+                    <button type="submit" class="nav-button"><i class="fas fa-right-from-bracket"></i> Disconnect</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="/" class="sidebar-link"><i class="fas fa-layer-group"></i> Command Center</a>
+            <a href="/#services" class="sidebar-link"><i class="fas fa-server"></i> Platform Services</a>
+            <a href="/subscription" class="sidebar-link"><i class="fas fa-credit-card"></i> Subscription</a>
+            <a href="/support" class="sidebar-link active"><i class="fas fa-life-ring"></i> Support</a>
+            <a href="/admin" id="adminLink" class="sidebar-link hidden" style="color:var(--quantum-1)"><i class="fas fa-terminal"></i> Admin Console</a>
+        </aside>
+
+        <div class="main-area">
+            <!-- Ticket list view -->
+            <div id="listView" class="ticket-list-view">
+                <div class="support-header">
+                    <h1>Support Tickets</h1>
+                    <button class="main-btn" onclick="openNewTicket()"><i class="fas fa-plus"></i> New Ticket</button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-tab" data-filter="open" onclick="setFilter('open', this)">Open</button>
+                    <button class="filter-tab" data-filter="closed" onclick="setFilter('closed', this)">Closed</button>
+                </div>
+
+                <div id="ticketList" class="ticket-list">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading tickets...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket detail view -->
+            <div id="detailView" class="ticket-detail">
+                <div class="detail-header">
+                    <div style="flex:1; min-width:0;">
+                        <h2 id="detailSubject"></h2>
+                        <div style="display:flex; gap:0.8rem; align-items:center; margin-top:0.5rem;">
+                            <span id="detailStatus" class="status-badge"></span>
+                            <span id="detailDate" style="font-size:0.75rem; color:var(--fg-muted);"></span>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="back-btn" onclick="backToList()"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button id="btnClose" class="action-btn danger" onclick="toggleTicketStatus()">Close</button>
+                    </div>
+                </div>
+
+                <div id="messagesThread" class="messages-thread"></div>
+
+                <div id="replyBox" class="reply-box">
+                    <textarea id="replyText" placeholder="Type your reply..."></textarea>
+                    <div class="reply-actions">
+                        <button class="main-btn" onclick="sendReply()" id="btnReply" style="padding:0.6rem 1.6rem;">
+                            <i class="fas fa-paper-plane"></i> Send Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Ticket Modal -->
+    <div class="modal-overlay" id="newTicketModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>New Support Ticket</h3>
+                <button class="close-modal" onclick="closeNewTicket()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-field">
+                <label>Subject</label>
+                <input type="text" id="ticketSubject" placeholder="Brief description of your issue" maxlength="255">
+            </div>
+            <div class="form-field">
+                <label>Message</label>
+                <textarea id="ticketMessage" placeholder="Describe your issue in detail..." maxlength="5000"></textarea>
+            </div>
+            <button class="main-btn" onclick="submitTicket()" id="btnSubmit" style="width:100%; margin-top:0.5rem;">
+                <i class="fas fa-paper-plane"></i> Submit Ticket
+            </button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Umbra Security.</p>
+                <a href="https://dashboard.umbrasec.one" style="color:var(--fg-muted); font-size:0.8rem;">Back to Dashboard</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let allTickets = [];
+        let currentFilter = 'all';
+        let currentTicketId = null;
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color:${type === 'error' ? '#ef4444' : 'var(--quantum-3)'}"></i> ${escapeHtml(msg)}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str || '';
+            return d.innerHTML;
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            const now = new Date();
+            const diff = now - d;
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatFullDate(iso) {
+            return new Date(iso).toLocaleString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric',
+                hour: 'numeric', minute: '2-digit'
+            });
+        }
+
+        async function apiPost(url, body = {}) {
+            const cr = await fetch('/api/csrf', { credentials: 'same-origin' });
+            const cd = await cr.json();
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': cd.csrfToken },
+                body: new URLSearchParams({ ...body, _csrf: cd.csrfToken }),
+                credentials: 'same-origin',
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Request failed');
+            return data;
+        }
+
+        // Load tickets
+        async function loadTickets() {
+            try {
+                const res = await fetch('/api/support/tickets', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Failed to load');
+                const data = await res.json();
+                allTickets = data.tickets;
+                renderTickets();
+            } catch (err) {
+                document.getElementById('ticketList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load tickets. Please try again.</p>
+                    </div>`;
+            }
+        }
+
+        function renderTickets() {
+            const list = document.getElementById('ticketList');
+            const filtered = currentFilter === 'all' ? allTickets : allTickets.filter(t => t.status === currentFilter);
+
+            if (!filtered.length) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-ticket"></i>
+                        <p>${currentFilter === 'all' ? 'No support tickets yet. Create one to get help.' : 'No ' + currentFilter + ' tickets.'}</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map(t => `
+                <div class="ticket-item" onclick="viewTicket('${t.ticket_id}')">
+                    <div class="ticket-info">
+                        <div class="ticket-subject">${escapeHtml(t.subject)}</div>
+                        <div class="ticket-meta">
+                            <span>Created ${formatDate(t.created_at)}</span>
+                            <span>Updated ${formatDate(t.updated_at)}</span>
+                        </div>
+                    </div>
+                    <div class="ticket-right">
+                        ${parseInt(t.unread_replies) > 0 ? '<div class="unread-dot" title="New reply"></div>' : ''}
+                        <span class="status-badge status-${t.status}">${t.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTickets();
+        }
+
+        // View ticket
+        async function viewTicket(ticketId) {
+            currentTicketId = ticketId;
+            try {
+                const res = await fetch(`/api/support/tickets/${ticketId}`, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Failed to load ticket');
+                const data = await res.json();
+
+                document.getElementById('detailSubject').textContent = data.ticket.subject;
+                document.getElementById('detailDate').textContent = 'Opened ' + formatFullDate(data.ticket.created_at);
+
+                const statusEl = document.getElementById('detailStatus');
+                statusEl.textContent = data.ticket.status;
+                statusEl.className = 'status-badge status-' + data.ticket.status;
+
+                const closeBtn = document.getElementById('btnClose');
+                if (data.ticket.status === 'open') {
+                    closeBtn.textContent = 'Close Ticket';
+                    closeBtn.className = 'action-btn danger';
+                } else {
+                    closeBtn.textContent = 'Reopen Ticket';
+                    closeBtn.className = 'action-btn success';
+                }
+
+                const thread = document.getElementById('messagesThread');
+                thread.innerHTML = data.messages.map(m => `
+                    <div class="message ${m.is_admin ? 'admin-msg' : ''}">
+                        <div class="message-header">
+                            <div>
+                                <span class="message-sender">${escapeHtml(m.username)}</span>
+                                ${m.is_admin ? '<span class="admin-badge">Staff</span>' : ''}
+                            </div>
+                            <span class="message-time">${formatFullDate(m.created_at)}</span>
+                        </div>
+                        <div class="message-body">${escapeHtml(m.body)}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('replyBox').style.display = data.ticket.status === 'closed' ? 'none' : '';
+                document.getElementById('replyText').value = '';
+
+                document.getElementById('listView').classList.add('hidden');
+                document.getElementById('detailView').classList.add('active');
+
+                setTimeout(() => { thread.scrollTop = thread.scrollHeight; }, 50);
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        function backToList() {
+            document.getElementById('detailView').classList.remove('active');
+            document.getElementById('listView').classList.remove('hidden');
+            currentTicketId = null;
+            loadTickets();
+        }
+
+        // Send reply
+        async function sendReply() {
+            const message = document.getElementById('replyText').value.trim();
+            if (!message) return showToast('Please enter a message', 'error');
+
+            const btn = document.getElementById('btnReply');
+            btn.disabled = true;
+            try {
+                await apiPost(`/api/support/tickets/${currentTicketId}/reply`, { message });
+                showToast('Reply sent');
+                viewTicket(currentTicketId);
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Toggle ticket status
+        async function toggleTicketStatus() {
+            const ticket = allTickets.find(t => t.ticket_id === currentTicketId);
+            const action = ticket && ticket.status === 'open' ? 'close' : 'reopen';
+            try {
+                await apiPost(`/api/support/tickets/${currentTicketId}/${action}`);
+                showToast(`Ticket ${action === 'close' ? 'closed' : 'reopened'}`);
+                await loadTickets();
+                viewTicket(currentTicketId);
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // New ticket
+        function openNewTicket() {
+            document.getElementById('ticketSubject').value = '';
+            document.getElementById('ticketMessage').value = '';
+            document.getElementById('newTicketModal').classList.add('active');
+        }
+
+        function closeNewTicket() {
+            document.getElementById('newTicketModal').classList.remove('active');
+        }
+
+        async function submitTicket() {
+            const subject = document.getElementById('ticketSubject').value.trim();
+            const message = document.getElementById('ticketMessage').value.trim();
+            if (!subject) return showToast('Subject is required', 'error');
+            if (!message) return showToast('Message is required', 'error');
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            try {
+                const data = await apiPost('/api/support/tickets', { subject, message });
+                showToast('Ticket created');
+                closeNewTicket();
+                await loadTickets();
+                viewTicket(data.ticket.ticket_id);
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('newTicketModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeNewTicket();
+        });
+
+        // Show admin link if admin
+        async function checkAdmin() {
+            try {
+                const res = await fetch('/api/dashboard', { credentials: 'same-origin' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.role === 'admin') {
+                        document.getElementById('adminLink').classList.remove('hidden');
+                    }
+                }
+            } catch {}
+        }
+
+        // Ctrl+Enter to send reply
+        document.getElementById('replyText').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') sendReply();
+        });
+        document.getElementById('ticketMessage').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') submitTicket();
+        });
+
+        loadTickets();
+        checkAdmin();
+    </script>
+</body>
+</html>

@@ -311,6 +311,119 @@
     }
 }
 
+/* Support Ticket Styles */
+.support-filter {
+    background: none;
+    border: 1px solid var(--glass-border);
+    color: var(--fg-muted);
+    padding: 0.5rem 1.2rem;
+    border-radius: 99px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.support-filter:hover { border-color: var(--glass-highlight); color: #fff; }
+.support-filter.active {
+    background: var(--quantum-1);
+    border-color: var(--quantum-1);
+    color: #fff;
+}
+
+.support-ticket-item {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.support-ticket-item:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    background: rgba(255, 255, 255, 0.02);
+}
+.st-info { flex: 1; min-width: 0; }
+.st-subject {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.st-meta { font-size: 0.73rem; color: var(--fg-muted); margin-top: 3px; }
+.st-right { display: flex; align-items: center; gap: 0.8rem; flex-shrink: 0; }
+.st-count {
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+    background: rgba(255,255,255,0.04);
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.status-open {
+    background: rgba(45, 212, 191, 0.12);
+    color: var(--quantum-3);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+}
+.status-closed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.sd-message {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+}
+.sd-message.admin-msg {
+    border-color: rgba(139, 92, 246, 0.2);
+    background: rgba(139, 92, 246, 0.04);
+}
+.sd-msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.sd-msg-sender { font-weight: 600; font-size: 0.85rem; color: var(--quantum-3); }
+.sd-message.admin-msg .sd-msg-sender { color: var(--quantum-1); }
+.sd-msg-time { font-size: 0.72rem; color: var(--fg-muted); }
+.sd-admin-badge {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--quantum-1);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+}
+.sd-msg-body {
+    color: var(--fg-main);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
 @media (max-width: 480px) {
     h1 { font-size: 1.75rem; }
     .stat-card .value { font-size: 1.5rem; }

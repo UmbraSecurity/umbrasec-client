@@ -6,15 +6,6 @@
     <title>Anonymous Account — UmbraSec</title>
     <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
     <link rel="stylesheet" href="/static/shared.css">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-18049620600');
-    </script>
 </head>
 <body>
     <div class="background"></div>
@@ -52,6 +43,13 @@
             .then(data => { document.getElementById('csrf').value = data.csrfToken; })
             .catch(() => {});
 
+        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+        if (redirectParam) {
+            const qs = '?redirect=' + encodeURIComponent(redirectParam);
+            document.querySelector('a[href="/register"]').href += qs;
+            document.querySelector('a[href="/login"]').href += qs;
+        }
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -63,11 +61,14 @@
                 return;
             }
 
+            const formData = new URLSearchParams(new FormData(form));
+            if (redirectParam) formData.set('redirect', redirectParam);
+
             try {
                 const res = await fetch('/register/anonymous', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(form)),
+                    body: formData,
                     credentials: 'same-origin',
                     redirect: 'follow',
                 });

@@ -9,15 +9,6 @@
     <link rel="stylesheet" href="/CDN/stylesheets/global-theme.css">
     <link rel="stylesheet" href="/home/index.css">
     <link rel="stylesheet" href="/subscription/index.css">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-18049620600');
-    </script>
 </head>
 <body>
     <div class="background"></div>
@@ -33,11 +24,7 @@
             <a href="https://umbrasec.one" class="brand">Umbra<span>Security</span></a>
             <div class="nav-links">
                 <a href="https://dashboard.umbrasec.one" class="nav-item">Dashboard</a>
-                <a href="https://umbrasec.one/vpn" class="nav-item">Private VPN</a>
-                <a href="https://umbrasec.one/mail" class="nav-item">Personal Mail</a>
-                <a href="https://umbrasec.one/drive" class="nav-item">Secure Drive</a>
-                <a href="https://umbrasec.one/projects" class="nav-item">Projects</a>
-                <a href="https://umbrasec.one/contact" class="nav-item">Contact</a>
+                <a href="/support" class="nav-item"><i class="fas fa-life-ring"></i> Support</a>
                 <form method="POST" action="/logout" style="display:inline;">
                     <button type="submit" class="nav-button"><i class="fas fa-right-from-bracket"></i> Disconnect</button>
                 </form>
@@ -50,6 +37,7 @@
             <a href="/" class="sidebar-link"><i class="fas fa-layer-group"></i> Command Center</a>
             <a href="/#services" class="sidebar-link"><i class="fas fa-server"></i> Platform Services</a>
             <a href="/subscription" class="sidebar-link active"><i class="fas fa-credit-card"></i> Subscription</a>
+            <a href="/support" class="sidebar-link"><i class="fas fa-life-ring"></i> Support</a>
             <a href="/admin" id="adminLink" class="sidebar-link hidden" style="color:var(--quantum-1)"><i class="fas fa-terminal"></i> Admin Console</a>
         </aside>
 

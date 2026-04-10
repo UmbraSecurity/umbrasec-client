@@ -6,15 +6,6 @@
     <title>Login — UmbraSec</title>
     <link rel="icon" type="image/png" href="/CDN/images/favicon.png">
     <link rel="stylesheet" href="/static/shared.css">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18049620600"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-18049620600');
-    </script>
 </head>
 <body>
     <div class="background"></div>
@@ -34,9 +25,9 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
                 <div class="form-link">
-                    <a href="/register">Create an account</a>
+                    <a id="registerLink" href="/register">Create an account</a>
                     &nbsp;&middot;&nbsp;
-                    <a href="/register/anonymous">Anonymous signup</a>
+                    <a id="registerAnonLink" href="/register/anonymous">Anonymous signup</a>
                 </div>
             </div>
         </div>
@@ -48,6 +39,14 @@
             .then(data => { document.getElementById('csrf').value = data.csrfToken; })
             .catch(() => {});
 
+        // Pass through ?redirect= param
+        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+        if (redirectParam) {
+            const qs = '?redirect=' + encodeURIComponent(redirectParam);
+            document.getElementById('registerLink').href += qs;
+            document.getElementById('registerAnonLink').href += qs;
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -57,11 +56,14 @@
 
             btn.classList.add('loading');
 
+            const formData = new URLSearchParams(new FormData(form));
+            if (redirectParam) formData.set('redirect', redirectParam);
+
             try {
                 const res = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(form)),
+                    body: formData,
                     credentials: 'same-origin',
                     redirect: 'follow',
                 });

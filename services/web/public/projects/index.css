@@ -26,65 +26,8 @@
     margin-bottom: 3rem; font-size: 0.95rem;
 }
 
-.suite-section, .source-section, .projects-section {
+.source-section, .projects-section {
     max-width: 1200px; margin: 0 auto; padding: 0 2rem 5rem;
-}
-
-/* Suite Grid */
-.suite-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-}
-.suite-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.3s, transform 0.3s;
-}
-.suite-card:hover {
-    border-color: var(--quantum-3);
-    transform: translateY(-2px);
-}
-.suite-card.upcoming {
-    opacity: 0.6;
-    cursor: default;
-}
-.suite-card.upcoming:hover {
-    border-color: var(--glass-border);
-    transform: none;
-}
-.suite-icon {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: rgba(45, 212, 191, 0.08);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--quantum-3); font-size: 1.2rem; flex-shrink: 0;
-}
-.suite-card.upcoming .suite-icon {
-    background: rgba(255,255,255,0.04);
-    color: var(--fg-muted);
-}
-.suite-info { flex: 1; }
-.suite-info h3 { font-size: 1.1rem; color: #fff; margin-bottom: 0.5rem; }
-.suite-info p { font-size: 0.85rem; color: var(--fg-muted); line-height: 1.6; margin: 0; }
-.suite-status { flex-shrink: 0; padding-top: 2px; }
-.status-live {
-    display: inline-block; font-size: 0.65rem; text-transform: uppercase; font-weight: 700;
-    padding: 0.25rem 0.7rem; border-radius: 8px; letter-spacing: 0.5px;
-    background: rgba(45, 212, 191, 0.1); color: var(--quantum-3);
-    border: 1px solid rgba(45, 212, 191, 0.2);
-}
-.status-soon {
-    display: inline-block; font-size: 0.65rem; text-transform: uppercase; font-weight: 700;
-    padding: 0.25rem 0.7rem; border-radius: 8px; letter-spacing: 0.5px;
-    background: rgba(255,255,255,0.04); color: var(--fg-muted);
-    border: 1px solid rgba(255,255,255,0.08);
 }
 
 /* Source Card (Monorepo) */
@@ -188,7 +131,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .suite-grid { grid-template-columns: 1fr; }
     .project-grid { grid-template-columns: 1fr; }
     .detail-row { flex-direction: column; gap: 0.3rem; }
     .source-actions { flex-direction: column; }
